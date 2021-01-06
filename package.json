@@ -1,0 +1,25 @@
+{
+  "name": "vista-calc",
+  "version": "1.0.0",
+  "description": "Vista calculator",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vartemiev/vista-calc.git"
+  },
+  "author": "artvsd@mail.ru",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/vartemiev/vista-calc/issues"
+  },
+  "homepage": "https://github.com/vartemiev/vista-calc#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^5.11.1",
+    "webpack-cli": "^4.3.1"
+  }
+}
