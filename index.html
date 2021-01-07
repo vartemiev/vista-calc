@@ -103,7 +103,7 @@
           </div>
         </div>
 
-        <div class="form-group" id="new-monthlyAdding">
+        <div class="form-group" id="new-monthlyValue" style="display: none">
           <label for="monthValue" id="withdrawLabel" style="display: none">Сумма ежемесячного cнятия</label>
           <label for="monthValue" id="addLabel" style="display: block">Сумма ежемесячного пополнения</label>
           <input type="number" id="monthValue" class="form-control">
@@ -153,22 +153,22 @@
         <button type="button" class="btn btn-success" id="leverage-calc">Рассчитать</button>
 
         <div id="result" class="leverage-result" style="display: none;">
-          <div>
+          <div id="result_new">
             <div class="result">Новый контракт: </div>
-            <div class="digit" id="new-contract"></div>
+            <div class="digit" id="result_new__value"></div>
           </div>
-          <div>
+          <div id="result_balance">
             <div class="result">Результирующий баланс: </div>
-            <div class="digit" id="result-amount"></div>
+            <div class="digit" id="result_balance__value"></div>
           </div>
-          <div>
+          <div id="result_leverage">
             <div class="result">Кредитное плечо: </div>
-            <div class="digit" id="leverage-result"></div>
+            <div class="digit" id="result_leverage__value"></div>
           </div>
         </div>
       </form>
     </div>
   </body>
 
-  <script src="main.js"></script>
+  <script src="index.js"></script>
 </html>
