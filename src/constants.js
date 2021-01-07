@@ -151,5 +151,5 @@ export const RATES = [
 
 export const MIN_CONTRACT = 10000;
 export const AVERAGE_RATE = 1.95;
+export const LOAN_RATIO = 0.7;
 export const AJIO = 0.07;
-export const LOAN_KOEF = 0.7;

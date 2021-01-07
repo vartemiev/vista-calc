@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack",
     "deploy": "npm run build && gh-pages -d dist",
+    "start": "webpack-dev-server --inline --hot",
     "test": "npm run deploy"
   },
   "repository": {
@@ -22,7 +23,11 @@
     "gh-pages": "^3.1.0"
   },
   "devDependencies": {
-    "webpack": "^5.11.1",
-    "webpack-cli": "^4.3.1"
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "babel-loader": "^8.2.2",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   }
 }

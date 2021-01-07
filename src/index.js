@@ -2,89 +2,36 @@ import {
     RestockingStatus,
     LeverageStatus,
 
-    MONTHS,
-    RATES,
-
-    AVERAGE_RATE,
     MIN_CONTRACT,
     AJIO,
-    LOAN_KOEF,
 } from './constants';
 
-const twoDigits = amount => +amount.toFixed(2);
+import { formatDate } from './utils';
 
-const loan = amount => twoDigits(amount * LOAN_KOEF);
-const leverage = amount =>  twoDigits(amount / 3 * 7);
-const workFee = amount => twoDigits(amount * 0.2);
-const serviceFee = amount => twoDigits(amount / 12 / 100);
-const loanFee = amount => twoDigits(amount * 7 / 12 / 100);
+import { withLeverage, getMaxWithdraw as getMaxWithdraw_WLeverage } from './new-account/withLeverage';
+import { withoutLoan, getMaxWithdraw as getMaxWithdraw_WOLoan } from './new-account/withoutLoan';
+import { withLoan, getMaxWithdraw as getMaxWithdraw_WLoan } from './new-account/withLoan';
+import { onceLeverage } from './new-account/onceLeverage';
 
-const Profit = {
-    withLeverage: (income, amount) => twoDigits(income - workFee(income) - serviceFee(amount + leverage(amount)) - loanFee(leverage(amount))),
-    withLoan: (income, amount) => twoDigits(income - workFee(income) - serviceFee(amount + loan(amount)) - loanFee(loan(amount))),
-    withoutLoan: (income, amount) => twoDigits(income - workFee(income) - serviceFee(amount)),
-    onceUpdate: (income, amount, leverage) => twoDigits(income - workFee(income) - serviceFee(amount) - loanFee(leverage)),
-}
+import { calculateBoost } from './boost';
 
-const UpdateContract = {
-    withLeverage: (amount, contract) => Math.ceil((10 * amount - 3 * contract) / 3.7),
-    withLoan: (amount, contract) => Math.ceil((1.7 * amount -  contract) / 1.119),
-    withoutLoan: (amount, contract) => amount - contract,
-}
-
-const Income = {
-    withLeverage: (amount, rate) => twoDigits((amount + leverage(amount)) * rate / 100),
-    withLoan: (amount, rate) => twoDigits((amount + loan(amount)) * rate / 100),
-    withoutLoan: (amount, rate) => twoDigits(amount * rate / 100),
-}
-
-const defineMaxWithdraw = (amount, leverageStatus) => {
-    let withdrawRate;
-
-    switch (leverageStatus) {
-        case LeverageStatus.WITH_LEVERAGE:
-        case LeverageStatus.ONCE_UPDATE:
-            withdrawRate = 3.55;
-            break;
-
-        case LeverageStatus.WITH_LOAN:
-            withdrawRate = 2.09;
-            break;
-
-        default:
-            withdrawRate = AVERAGE_RATE;
-    }
-
-    return amount * withdrawRate / 100;
-}
 const getWithdrawAmount = () => {
     const enteredAmount = +document.querySelector('#start').value;
     const contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
     const amount = Math.round((enteredAmount - 100) - AJIO * contract);
+
     const leverageStatus = document.querySelector('[name="radio-group1"]:checked').id;
+    switch (leverageStatus) {
+        case LeverageStatus.WITH_LEVERAGE:
+        case LeverageStatus.ONCE_UPDATE:
+            return getMaxWithdraw_WLeverage(amount, contract);
 
-    return Math.floor(defineMaxWithdraw(amount, leverageStatus));
-};
+        case LeverageStatus.WITH_LOAN:
+            return getMaxWithdraw_WLoan(amount, contract);
 
-const formatDate = (timestamp) => {
-    const [date] = timestamp.split('T');
-    const [year, month, day] = date.split('-');
-
-    return `${day} ${MONTHS[+month - 1]} ${year}`;
-}
-
-const format = (amount) => {
-    const string = Math.round(amount).toString().split('');
-
-    let res = '';
-    while (string.length > 0) {
-        res += string
-            .splice(0, string.length % 3 || 3)
-            .join('');
-        res += ' ';
+        case LeverageStatus.WITHOUT_LOAN:
+            return getMaxWithdraw_WOLoan(amount);
     }
-
-    return res;
 };
 
 const defineAmount = (restockingStatus) => {
@@ -100,74 +47,6 @@ const defineAmount = (restockingStatus) => {
     }
 };
 
-const makeCalculations = (enteredAmount, monthsCount, monthValue, leverageStatus) => {
-    let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
-    let amount = Math.round((enteredAmount - 100) - AJIO * contract);
-
-    RATES.slice(-monthsCount).forEach(
-        (rate) => {
-            const updatedContract = UpdateContract[leverageStatus](amount, contract);
-            if (updatedContract > 0) {
-                contract += updatedContract;
-                amount = twoDigits(amount - updatedContract * AJIO);
-            }
-
-            const inc = Income[leverageStatus](amount, rate);
-            const profit = Profit[leverageStatus](inc, amount);
-
-            amount = twoDigits(amount + profit + monthValue);
-        }
-    );
-
-    amount -= monthValue;
-    const averageIncome = Income[leverageStatus](amount, AVERAGE_RATE);
-    const averageProfit = Profit[leverageStatus](averageIncome, amount);
-
-    document.querySelector('#amount').innerText = format(amount);
-    document.querySelector('#our').innerText = format(monthValue * monthsCount + enteredAmount);
-    document.querySelector('#profit').innerText = format(Math.floor(averageProfit));
-
-    document.querySelector('#new-result').style.display = 'block';
-};
-
-const onceRestocking = (enteredAmount, monthsCount, monthValue) => {
-    let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
-    let amount = Math.round((enteredAmount - 100) - AJIO * contract);
-
-    const updatedContract = UpdateContract.withLeverage(amount, contract);
-    if (updatedContract > 0) {
-        contract += updatedContract;
-        amount = twoDigits(amount - updatedContract * AJIO);
-    }
-
-    const _leverage = leverage(amount);
-    amount += _leverage;
-    const initialAmount = amount;
-
-    RATES.slice(-monthsCount).forEach((rate, i) => {
-        const updatedContract = UpdateContract.withoutLoan(initialAmount + i * monthValue, contract);
-        if (updatedContract > 0) {
-            contract += updatedContract;
-            amount = twoDigits(amount - updatedContract * AJIO);
-        }
-
-        const inc = Income.withoutLoan(amount, rate);
-        const profit = Profit.onceUpdate(inc, amount, _leverage);
-
-        amount = twoDigits(amount + profit + monthValue);
-    });
-
-    amount -= monthValue;
-    const averageIncome = Income.withoutLoan(amount, AVERAGE_RATE);
-    const averageProfit = Profit.withLoan(averageIncome, amount);
-
-    document.querySelector('#amount').innerText = format(amount - _leverage);
-    document.querySelector('#our').innerText = format(monthValue * monthsCount + enteredAmount);
-    document.querySelector('#profit').innerText = format(Math.floor(averageProfit));
-
-    document.querySelector('#new-result').style.display = 'block';
-}
-
 const calculateValue = () => {
     const leverageStatus = document.querySelector('[name="radio-group1"]:checked').id;
     const restockingStatus = document.querySelector('[name="radio-group2"]:checked').id;
@@ -178,21 +57,37 @@ const calculateValue = () => {
 
     switch (leverageStatus) {
         case LeverageStatus.WITH_LEVERAGE:
-            makeCalculations(enteredAmount, monthsCount, monthValue, LeverageStatus.WITH_LEVERAGE);
+            withLeverage(enteredAmount, monthsCount, monthValue);
             break;
 
         case LeverageStatus.WITH_LOAN:
-            makeCalculations(enteredAmount, monthsCount, monthValue, LeverageStatus.WITH_LOAN);
+            withLoan(enteredAmount, monthsCount, monthValue);
             break;
 
         case LeverageStatus.WITHOUT_LOAN:
-            makeCalculations(enteredAmount, monthsCount, monthValue, LeverageStatus.WITHOUT_LOAN);
+            withoutLoan(enteredAmount, monthsCount, monthValue);
             return;
 
         case LeverageStatus.ONCE_UPDATE:
-            onceRestocking(enteredAmount, monthsCount, monthValue);
+            onceLeverage(enteredAmount, monthsCount, monthValue);
             return;
+    }
+};
 
+const updateWithdrawAmount = () => {
+    const isWithdrawChosen = document.querySelector('#removeMonthly').checked;
+    if (!isWithdrawChosen) {
+        return;
+    }
+
+    const withdrawAmount = getWithdrawAmount();
+
+    document.querySelector('#withdraw-amount').innerText = withdrawAmount;
+
+    const isValueExceeds = +document.querySelector('#monthValue').value > withdrawAmount;
+    if (isValueExceeds) {
+        document.querySelector('#monthValue').value = withdrawAmount;
+        document.querySelector('#monthValue').max = withdrawAmount;
     }
 };
 
@@ -221,7 +116,11 @@ const init = () => {
         levForm.style.display = 'block';
     });
 
+
     document.querySelector('#removeMonthly').addEventListener('change', () => {
+        document.querySelector('#monthValue').value = '';
+        document.querySelector('#new-monthlyValue').style.display = 'block';
+
         document.querySelector('#withdrawLabel').style.display = 'block';
         document.querySelector('#addLabel').style.display = 'none';
 
@@ -230,15 +129,31 @@ const init = () => {
     });
 
     document.querySelector('#addMonthly').addEventListener('change', () => {
+        document.querySelector('#monthValue').value = '';
+        document.querySelector('#new-monthlyValue').style.display = 'block';
+
         document.querySelector('#withdrawLabel').style.display = 'none';
         document.querySelector('#addLabel').style.display = 'block';
+
         document.querySelector('#max-withdraw').style.display = 'none';
     });
 
     document.querySelector('#noAddNoRemove').addEventListener('change', () => {
-        document.querySelector('#new-monthlyWithdraw').style.display = 'none';
-        document.querySelector('#new-monthlyAdding').style.display = 'none';
+        document.querySelector('#new-monthlyValue').style.display = 'none';
         document.querySelector('#max-withdraw').style.display = 'none';
+    });
+
+    document.querySelector('#radio-group1').addEventListener('change', updateWithdrawAmount);
+    document.querySelector('#start').addEventListener('change', updateWithdrawAmount)
+
+    document.querySelector('#new-account').addEventListener('reset', () => {
+        document.querySelector('#max-withdraw').style.display = 'none';
+        document.querySelector('#new-monthlyValue').style.display = 'none';
+        document.querySelector('#new-result').style.display = 'none';
+    });
+
+    document.querySelector('#leverage').addEventListener('reset', () => {
+        document.querySelector('#result').style.display = 'none';
     });
 
     accTab.click();
@@ -251,24 +166,6 @@ const init = () => {
             document.querySelector('#eurRate').style.display = 'block';
         });
 }
-
-const calculateBoost = () => {
-    const balance = +document.querySelector('#balance').value;
-    const loan = +document.querySelector('#loan').value;
-    let contract = +document.querySelector('#contract').value;
-
-    let amount = twoDigits(balance - loan);
-    const updatedContract = UpdateContract.withLeverage(amount, contract);
-    if (updatedContract > 0) {
-        contract = Math.ceil(contract + updatedContract);
-        amount = twoDigits(amount - updatedContract * AJIO);
-        document.querySelector('#new-contract').innerText = `${format(contract)} EUR`;
-        document.querySelector('#result-amount').innerText = `${format(amount)} EUR`;
-    }
-
-    document.querySelector('#leverage-result').innerText = `${format(Math.floor(leverage(amount)))} EUR`;
-    document.querySelector('#result').style.display = 'block';
-};
 
 document.querySelector('#leverage-calc').addEventListener('click', calculateBoost);
 
