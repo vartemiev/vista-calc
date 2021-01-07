@@ -82,12 +82,11 @@ const updateWithdrawAmount = () => {
 
     const withdrawAmount = getWithdrawAmount();
 
-    document.querySelector('#withdraw-amount').innerText = withdrawAmount;
+    document.querySelector('#withdraw-amount').innerText = `${withdrawAmount} EUR`;
 
     const isValueExceeds = +document.querySelector('#monthValue').value > withdrawAmount;
     if (isValueExceeds) {
         document.querySelector('#monthValue').value = withdrawAmount;
-        document.querySelector('#monthValue').max = withdrawAmount;
     }
 };
 
@@ -125,7 +124,7 @@ const init = () => {
         document.querySelector('#addLabel').style.display = 'none';
 
         document.querySelector('#max-withdraw').style.display = 'block';
-        document.querySelector('#withdraw-amount').innerText = getWithdrawAmount();
+        document.querySelector('#withdraw-amount').innerText = `${getWithdrawAmount()} EUR`;
     });
 
     document.querySelector('#addMonthly').addEventListener('change', () => {
