@@ -30,3 +30,10 @@ export const formatDate = (timestamp) => {
 
     return `${day} ${MONTHS[+month - 1]} ${year}`;
 }
+
+export const hide = selector => document.querySelector(selector).style.display = 'none';
+export const show = (selector, method) => document.querySelector(selector).style.display = method || 'block';
+export const value = selector => document.querySelector(selector).value;
+
+export const elem = selector => document.querySelector(selector);
+export const elems = selector => document.querySelectorAll(selector);

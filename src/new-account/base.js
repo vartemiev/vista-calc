@@ -1,5 +1,5 @@
 import { AJIO, AVERAGE_RATE, MIN_CONTRACT, RATES } from '../constants';
-import { roundTwo, format } from '../utils';
+import { roundTwo, format, elem, show } from '../utils';
 
 export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta) => {
     let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
@@ -25,9 +25,9 @@ export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, get
     const averageProfit = getProfit(averageIncome, amount);
     const addedPerMonth = monthValue > 0 ? monthValue : 0;
 
-    document.querySelector('#amount').innerText = `${format(amount)} EUR`;
-    document.querySelector('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
-    document.querySelector('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
+    elem('#amount').innerText = `${format(amount)} EUR`;
+    elem('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
+    elem('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
 
-    document.querySelector('#new-result').style.display = 'block';
+    show('#new-result');
 };

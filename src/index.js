@@ -6,7 +6,7 @@ import {
     AJIO,
 } from './constants';
 
-import { formatDate } from './utils';
+import { formatDate, roundTwo, show, hide, value, elem, elems } from './utils';
 
 import { withLeverage, getMaxWithdraw as getMaxWithdraw_WLeverage } from './new-account/withLeverage';
 import { withoutLoan, getMaxWithdraw as getMaxWithdraw_WOLoan } from './new-account/withoutLoan';
@@ -15,12 +15,22 @@ import { onceLeverage } from './new-account/onceLeverage';
 
 import { calculateBoost } from './boost';
 
+let EURRate;
+
 const getWithdrawAmount = () => {
-    const enteredAmount = +document.querySelector('#start').value;
+    let enteredAmount = +value('#init-amount');
+    if (elem('.currency.active').id === 'currency_RUB') {
+        enteredAmount = enteredAmount / EURRate * 0.98;
+    }
+
+    if (enteredAmount < 1100) {
+        return 0;
+    }
+
     const contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
     const amount = Math.round((enteredAmount - 100) - AJIO * contract);
 
-    const leverageStatus = document.querySelector('[name="radio-group1"]:checked').id;
+    const leverageStatus = elem('[name="radio-group1"]:checked').id;
     switch (leverageStatus) {
         case LeverageStatus.WITH_LEVERAGE:
         case LeverageStatus.ONCE_UPDATE:
@@ -40,20 +50,24 @@ const defineAmount = (restockingStatus) => {
             return 0;
 
         case RestockingStatus.ADD_MONTHLY:
-            return +document.querySelector('#monthValue').value;
+            return +value('#monthValue');
 
         case RestockingStatus.REMOVE_MONTHLY:
-            return -(+document.querySelector('#monthValue').value);
+            return -value('#monthValue');
     }
 };
 
 const calculateValue = () => {
-    const leverageStatus = document.querySelector('[name="radio-group1"]:checked').id;
-    const restockingStatus = document.querySelector('[name="radio-group2"]:checked').id;
+    const leverageStatus = elem('[name="radio-group1"]:checked').id;
+    const restockingStatus = elem('[name="radio-group2"]:checked').id;
 
-    const enteredAmount = +document.querySelector('#start').value;
-    const monthsCount = +document.querySelector('#monthsCount').value;
+    const monthsCount = +value('#monthsCount');
     const monthValue = defineAmount(restockingStatus);
+
+    let enteredAmount = +value('#init-amount');
+    if (elem('.currency.active').id === 'currency_RUB') {
+        enteredAmount = enteredAmount / EURRate * 0.98;
+    }
 
     switch (leverageStatus) {
         case LeverageStatus.WITH_LEVERAGE:
@@ -75,97 +89,140 @@ const calculateValue = () => {
 };
 
 const updateWithdrawAmount = () => {
-    const isWithdrawChosen = document.querySelector('#removeMonthly').checked;
+    const isWithdrawChosen = elem('#removeMonthly').checked;
     if (!isWithdrawChosen) {
         return;
     }
 
     const withdrawAmount = getWithdrawAmount();
 
-    document.querySelector('#withdraw-amount').innerText = `${withdrawAmount} EUR`;
+    elem('#withdraw-amount').innerText = `${withdrawAmount} EUR`;
 
-    const isValueExceeds = +document.querySelector('#monthValue').value > withdrawAmount;
+    const isValueExceeds = +value('#monthValue') > withdrawAmount;
     if (isValueExceeds) {
-        document.querySelector('#monthValue').value = withdrawAmount;
+        elem('#monthValue').value = withdrawAmount;
     }
 };
 
-document.querySelector('#calculate').addEventListener('click', calculateValue);
+const updateRUBInfo = () => {
+    const enteredAmount = +value('#init-amount');
+    const EURValue = enteredAmount / EURRate;
+    const fee = EURValue * 0.02;
+
+    if (EURValue - fee < 1100) {
+        show('#RUB-info_warning', 'inline');
+        elem('#RUB-info_warning__value').innerText = `${Math.ceil(1100 * EURRate / 0.98)} RUB`;
+    } else {
+        hide('#RUB-info_warning');
+    }
+
+    elem('#RUB-info_fee').innerText = `${roundTwo(fee)} EUR`;
+    elem('#RUB-info_value').innerText = `${roundTwo(EURValue  - fee)} EUR`;
+};
+
+elem('#calculate').addEventListener('click', calculateValue);
 
 const init = () => {
-    const accTab = document.querySelector('#new-account-tab');
-    const levTab = document.querySelector('#leverage-tab');
-
-    const accForm = document.querySelector('#new-account');
-    const levForm = document.querySelector('#leverage');
+    const accTab = elem('#new-account-tab');
+    const levTab = elem('#leverage-tab');
 
     accTab.addEventListener('click', () => {
         accTab.classList.add('active')
         levTab.classList.remove('active');
 
-        accForm.style.display = 'block';
-        levForm.style.display = 'none';
+        show('#new-account');
+        hide('#leverage');
     });
 
     levTab.addEventListener('click', () => {
         accTab.classList.remove('active')
         levTab.classList.add('active');
 
-        accForm.style.display = 'none';
-        levForm.style.display = 'block';
+        hide('#new-account');
+        show('#leverage');
     });
 
 
-    document.querySelector('#removeMonthly').addEventListener('change', () => {
-        document.querySelector('#monthValue').value = '';
-        document.querySelector('#new-monthlyValue').style.display = 'block';
+    elem('#new-account').addEventListener('submit', e => e.preventDefault());
+    elem('#new-account').addEventListener('submit', e => e.preventDefault());
 
-        document.querySelector('#withdrawLabel').style.display = 'block';
-        document.querySelector('#addLabel').style.display = 'none';
+    elem('#removeMonthly').addEventListener('change', () => {
+        elem('#monthValue').value = '';
+        show('#new-monthlyValue');
 
-        document.querySelector('#max-withdraw').style.display = 'block';
-        document.querySelector('#withdraw-amount').innerText = `${getWithdrawAmount()} EUR`;
+        show('#withdrawLabel');
+        hide('#addLabel');
+
+        show('#max-withdraw');
+        elem('#withdraw-amount').innerText = `${getWithdrawAmount()} EUR`;
     });
 
-    document.querySelector('#addMonthly').addEventListener('change', () => {
-        document.querySelector('#monthValue').value = '';
-        document.querySelector('#new-monthlyValue').style.display = 'block';
+    elem('#addMonthly').addEventListener('change', () => {
+        elem('#monthValue').value = '';
+        show('#new-monthlyValue');
 
-        document.querySelector('#withdrawLabel').style.display = 'none';
-        document.querySelector('#addLabel').style.display = 'block';
+        hide('#withdrawLabel');
+        show('#addLabel');
 
-        document.querySelector('#max-withdraw').style.display = 'none';
+        hide('#max-withdraw');
     });
 
-    document.querySelector('#noAddNoRemove').addEventListener('change', () => {
-        document.querySelector('#new-monthlyValue').style.display = 'none';
-        document.querySelector('#max-withdraw').style.display = 'none';
+    elem('#noAddNoRemove').addEventListener('change', () => {
+        hide('#new-monthlyValue');
+        hide('#max-withdraw');
     });
 
-    document.querySelector('#radio-group1').addEventListener('change', updateWithdrawAmount);
-    document.querySelector('#start').addEventListener('change', updateWithdrawAmount)
+    elem('#radio-group1').addEventListener('change', updateWithdrawAmount);
 
-    document.querySelector('#new-account').addEventListener('reset', () => {
-        document.querySelector('#max-withdraw').style.display = 'none';
-        document.querySelector('#new-monthlyValue').style.display = 'none';
-        document.querySelector('#new-result').style.display = 'none';
+    elem('#new-account').addEventListener('reset', () => {
+        hide('#max-withdraw');
+        hide('#new-monthlyValue');
+        hide('#new-result');
     });
 
-    document.querySelector('#leverage').addEventListener('reset', () => {
-        document.querySelector('#result').style.display = 'none';
+    elem('#leverage').addEventListener('reset', () => {
+        hide('#result');
     });
+
+    elem('#currency').addEventListener('click', (e) => {
+        if (!e.target.classList.contains('currency')) {
+            return;
+        }
+
+        elems('.currency').forEach(el => el.classList.remove('active'));
+        e.target.classList.add('active');
+
+        updateWithdrawAmount();
+
+        if (e.target.id === 'currency_RUB') {
+            updateRUBInfo();
+            show('#RUB-info');
+        } else {
+            hide('#RUB-info');
+        }
+    });
+
+    elem('#init-amount').addEventListener('input', () => {
+        updateWithdrawAmount();
+
+        if (elem('.currency.active').id === 'currency_RUB') {
+            updateRUBInfo();
+        }
+    });
+
+    elem('#leverage-calc').addEventListener('click', calculateBoost);
 
     accTab.click();
 
     fetch('https://www.cbr-xml-daily.ru/daily_json.js')
         .then(response => response.json())
         .then(daylyInfo => {
-            document.querySelector('#eurValue').innerText = daylyInfo.Valute.EUR.Value;
-            document.querySelector('#eurDate').innerText = formatDate(daylyInfo.Date);
-            document.querySelector('#eurRate').style.display = 'block';
+            EURRate = daylyInfo.Valute.EUR.Value;
+
+            elem('#eurValue').innerText = EURRate;
+            elem('#eurDate').innerText = formatDate(daylyInfo.Date);
+            show('#eurRate');
         });
 }
-
-document.querySelector('#leverage-calc').addEventListener('click', calculateBoost);
 
 init();
