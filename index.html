@@ -23,6 +23,12 @@
       font-size: 22px;
     }
 
+    .digit-sm {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
     /* Chrome, Safari, Edge, Opera */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
@@ -43,6 +49,31 @@
     input[type=number] {
       -moz-appearance: textfield;
     }
+
+    .currency {
+      color: #226ede;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .currency.active {
+      color: #48e68f;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .currency:hover {
+      color: #4e936d;
+      cursor: pointer;
+    }
+
+    #RUB-info {
+      font-size: 13px;
+      padding-left: 14px;
+      padding-top: 5px;
+    }
+
   </style>
 </head>
 
@@ -63,8 +94,22 @@
 
       <form id="new-account" style="margin: 20px">
         <div class="form-group">
-          <label for="start">Начальная сумма</label>
-          <input type="number" id="start" class="form-control" value="1100" min="1000">
+          <label for="init-amount">Начальная сумма</label> (<span id="currency"><span id="currency_EUR" class="currency active">EUR</span> | <span id="currency_RUB" class="currency">RUB</span></span>)
+          <input type="number" id="init-amount" class="form-control" value="1100" min="1100">
+          <div id="RUB-info" style="display: none">
+            <div id="RUB-info_warning">
+              <span style="color: red">Минимальная сумма: </span>
+              <span id="RUB-info_warning__value" class="digit-sm" style="color: red"></span>
+            </div>
+            <div>
+              <span>Комиссия: </span>
+              <span id="RUB-info_fee" class="digit-sm"></span>
+            </div>
+            <div>
+              <span>Сумма для пополнения счета</span>
+              <span id="RUB-info_value" class="digit-sm"></span>
+            </div>
+          </div>
         </div>
 
         <div class="row" style="padding: 20px" >
@@ -116,9 +161,9 @@
         </div>
         <div class="form-group" id="new-monthsCount">
           <label for="monthsCount">Количество месяцев</label>
-          <input type="number" id="monthsCount" class="form-control">
+          <input type="number" id="monthsCount" class="form-control" required>
         </div>
-        <button type="button" class="btn btn-success" id="calculate">Рассчитать</button>
+        <button type="submit" class="btn btn-success" id="calculate">Рассчитать</button>
 
         <div id="new-result" class="leverage-result" style="display: none;">
           <div>
@@ -140,17 +185,17 @@
       <form id="leverage" style="margin: 20px">
         <div class="form-group">
           <label for="balance">Текущий баланс</label>
-          <input type="number" id="balance" class="form-control" value="" min="" />
+          <input type="number" id="balance" class="form-control" value="" required />
         </div>
         <div class="form-group">
           <label for="loan">Текущий займ</label>
-          <input type="number" id="loan" class="form-control" value="" min="" />
+          <input type="number" id="loan" class="form-control" value="" required />
         </div>
         <div class="form-group">
           <label for="contract">Текущий контракт</label>
-          <input type="number" id="contract" class="form-control" value="" min="" />
+          <input type="number" id="contract" class="form-control" value="" required />
         </div>
-        <button type="button" class="btn btn-success" id="leverage-calc">Рассчитать</button>
+        <button type="submit" class="btn btn-success" id="leverage-calc">Рассчитать</button>
 
         <div id="result" class="leverage-result" style="display: none;">
           <div id="result_new">
