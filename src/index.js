@@ -109,18 +109,10 @@ const updateRUBInfo = () => {
     const EURValue = enteredAmount / EURRate;
     const fee = EURValue * 0.02;
 
-    if (EURValue - fee < 1100) {
-        show('#RUB-info_warning', 'inline');
-        elem('#RUB-info_warning__value').innerText = `${Math.ceil(1100 * EURRate / 0.98)} RUB`;
-    } else {
-        hide('#RUB-info_warning');
-    }
-
+    elem('#init-amount').min = Math.ceil(1100 * EURRate / 0.98);
     elem('#RUB-info_fee').innerText = `${roundTwo(fee)} EUR`;
     elem('#RUB-info_value').innerText = `${roundTwo(EURValue  - fee)} EUR`;
 };
-
-elem('#calculate').addEventListener('click', calculateValue);
 
 const init = () => {
     const accTab = elem('#new-account-tab');
@@ -132,6 +124,8 @@ const init = () => {
 
         show('#new-account');
         hide('#leverage');
+
+        elem('#leverage').reset();
     });
 
     levTab.addEventListener('click', () => {
@@ -140,11 +134,19 @@ const init = () => {
 
         hide('#new-account');
         show('#leverage');
+
+        elem('#new-account').reset();
     });
 
 
-    elem('#new-account').addEventListener('submit', e => e.preventDefault());
-    elem('#new-account').addEventListener('submit', e => e.preventDefault());
+    elem('#new-account').addEventListener('submit', e => {
+        e.preventDefault();
+        calculateValue();
+    });
+    elem('#leverage').addEventListener('submit', e => {
+        e.preventDefault();
+        calculateBoost();
+    });
 
     elem('#removeMonthly').addEventListener('change', () => {
         elem('#monthValue').value = '';
@@ -189,15 +191,19 @@ const init = () => {
             return;
         }
 
+        elem('#new-account').reset();
         elems('.currency').forEach(el => el.classList.remove('active'));
         e.target.classList.add('active');
 
+        const isRUB = e.target.id === 'currency_RUB';
+
         updateWithdrawAmount();
 
-        if (e.target.id === 'currency_RUB') {
+        if (isRUB) {
             updateRUBInfo();
             show('#RUB-info');
         } else {
+            elem('#init-amount').min = 1100;
             hide('#RUB-info');
         }
     });
@@ -209,8 +215,6 @@ const init = () => {
             updateRUBInfo();
         }
     });
-
-    elem('#leverage-calc').addEventListener('click', calculateBoost);
 
     accTab.click();
 
