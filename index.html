@@ -94,13 +94,10 @@
 
       <form id="new-account" style="margin: 20px">
         <div class="form-group">
-          <label for="init-amount">Начальная сумма</label> (<span id="currency"><span id="currency_EUR" class="currency active">EUR</span> | <span id="currency_RUB" class="currency">RUB</span></span>)
-          <input type="number" id="init-amount" class="form-control" value="1100" min="1100">
+          <label for="init-amount">Начальная сумма</label> ( <span id="currency"><span id="currency_EUR" class="currency active">EUR</span> | <span id="currency_RUB" class="currency">RUB</span></span> )
+          <input type="number" id="init-amount" class="form-control" required min="1100" value="">
+
           <div id="RUB-info" style="display: none">
-            <div id="RUB-info_warning">
-              <span style="color: red">Минимальная сумма: </span>
-              <span id="RUB-info_warning__value" class="digit-sm" style="color: red"></span>
-            </div>
             <div>
               <span>Комиссия: </span>
               <span id="RUB-info_fee" class="digit-sm"></span>
