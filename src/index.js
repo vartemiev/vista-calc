@@ -201,9 +201,11 @@ const init = () => {
 
         if (isRUB) {
             updateRUBInfo();
+            show('#cbRate', 'inline');
             show('#RUB-info');
         } else {
             elem('#init-amount').min = 1100;
+            hide('#cbRate');
             hide('#RUB-info');
         }
     });
@@ -224,6 +226,7 @@ const init = () => {
             EURRate = daylyInfo.Valute.EUR.Value;
 
             elem('#eurValue').innerText = EURRate;
+            elem('#cbRate_value').innerText = EURRate;
             elem('#eurDate').innerText = formatDate(daylyInfo.Date);
             show('#eurRate');
         });
