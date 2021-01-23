@@ -58,6 +58,8 @@ const defineAmount = (restockingStatus) => {
 };
 
 const calculateValue = () => {
+    elem('#detalization tbody').innerHTML = '';
+
     const leverageStatus = elem('[name="radio-group1"]:checked').id;
     const restockingStatus = elem('[name="radio-group2"]:checked').id;
 
@@ -96,6 +98,7 @@ const updateWithdrawAmount = () => {
 
     const withdrawAmount = getWithdrawAmount();
 
+    elem('#monthValue').max = withdrawAmount;
     elem('#withdraw-amount').innerText = `${withdrawAmount} EUR`;
 
     const isValueExceeds = +value('#monthValue') > withdrawAmount;
@@ -156,11 +159,14 @@ const init = () => {
         hide('#addLabel');
 
         show('#max-withdraw');
+        elem('#monthValue').max = getWithdrawAmount();
         elem('#withdraw-amount').innerText = `${getWithdrawAmount()} EUR`;
     });
 
     elem('#addMonthly').addEventListener('change', () => {
         elem('#monthValue').value = '';
+        elem('#monthValue').max = '';
+
         show('#new-monthlyValue');
 
         hide('#withdrawLabel');
@@ -233,3 +239,33 @@ const init = () => {
 }
 
 init();
+
+const tableToExcel = (table, name, fileName) => {
+    const uri = 'data:application/vnd.ms-excel;base64,';
+    const template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+    const base64 = (s) => window.btoa(unescape(encodeURIComponent(s)));
+    const format = (s, c) => s.replace(/{(\w+)}/g, function(m, p) { return c[p]; });
+
+    const downloadURI = (uri, name) => {
+        const link = document.createElement('a');
+        link.download = name;
+        link.href = uri;
+        link.click();
+    }
+
+    if (!table.nodeType) {
+        table = document.getElementById(table)
+    }
+
+    const ctx = {
+        worksheet: name || 'Worksheet',
+        table: table.innerHTML
+    };
+
+    const resUri = uri + base64(format(template, ctx));
+    downloadURI(resUri, fileName);
+}
+
+elem('#details').addEventListener('click', () =>
+    tableToExcel('detalization', 'Детализация', 'Details.xls')
+);

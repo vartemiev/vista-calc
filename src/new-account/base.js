@@ -1,20 +1,39 @@
-import { AJIO, AVERAGE_RATE, MIN_CONTRACT, RATES } from '../constants';
-import { roundTwo, format, elem, show } from '../utils';
+import { AJIO, AVERAGE_RATE, MIN_CONTRACT } from '../constants';
+import { roundTwo, format, elem, show, generateRates, getMonthYear } from '../utils';
 
-export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta) => {
+export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow) => {
     let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
-    let amount = Math.round((enteredAmount - 100) - AJIO * contract);
+    let amount = Math.round((enteredAmount - 100) - contract * AJIO);
 
-    RATES.slice(-monthsCount).forEach(
-        (rate) => {
-            const contractDelta = getContractDelta(amount, contract);
+    const initialAmount = amount;
+    generateRates(monthsCount).forEach(
+        (rate, i) => {
+            let ajio;
+            const contractDelta = getContractDelta(amount, contract, initialAmount + i * monthValue);
             if (contractDelta > 0) {
                 contract += contractDelta;
-                amount = roundTwo(amount - contractDelta * AJIO);
+                ajio = contractDelta * AJIO;
+                amount = roundTwo(amount - ajio);
+            } else {
+                ajio = 0;
             }
 
             const income = getIncome(amount, rate);
             const profit = getProfit(income, amount);
+
+            if (createRow) {
+                const tableRow = createRow({
+                    month: getMonthYear(monthsCount - i),
+                    renewal: i === 0 ? enteredAmount : monthValue,
+                    ajio: i === 0 ? contract * AJIO : ajio,
+                    contract,
+                    amount,
+                    rate,
+                    income,
+                    profit,
+                });
+                elem('#detalization tbody').innerHTML += tableRow;
+            }
 
             amount = roundTwo(amount + profit + monthValue);
         }

@@ -1,15 +1,46 @@
 import { AJIO, AVERAGE_RATE, MIN_CONTRACT, RATES } from '../constants';
-import { roundTwo, serviceFee, workFee, format, loanFee, leverage } from '../utils';
+import {
+    roundTwo,
+    serviceFee,
+    workFee,
+    format,
+    loanFee,
+    leverage,
+    generateRates,
+    getMonthYear,
+    elem
+} from '../utils';
 
 import { getProfit as getProfit_WLoan } from './withLoan';
-import { getContractDelta as getContractDelta_WLeverage, getIncome } from './withLeverage';
+import { getContractDelta as getContractDelta_WLeverage } from './withLeverage';
 import {
     getIncome as getIncome_WOLoan,
     getContractDelta as getContractDelta_WOLoan,
 } from './withoutLoan';
 
-
 export const getProfit = (income, amount, leverage) => roundTwo(income - workFee(income) - serviceFee(amount) - loanFee(leverage));
+
+export const createRow = (data) => {
+    return `
+        <tr>
+            <td>${data.month}</td>
+            <td>${data.renewal.toFixed(2)}</td>
+            <td>${data.contract.toFixed(2)}</td>
+            <td>${data.ajio.toFixed(2)}</td>
+            <td>${data.amount.toFixed(2)}</td>
+            <td>${data.leverage.toFixed(2)}</td>
+            <td>${(data.amount + data.leverage).toFixed(2)}</td>
+            <td>${data.rate.toFixed(2)}</td>
+            <td>${data.income.toFixed(2)}</td>
+            <td>${workFee(data.income).toFixed(2)}</td>
+            <td>${serviceFee(data.amount + data.leverage).toFixed(2)}</td>
+            <td>${loanFee(data.leverage).toFixed(2)}</td>
+            <td>${(data.amount + data.profit + data.leverage).toFixed(2)}</td>
+            <td>${(data.amount + data.profit).toFixed(2)}</td>
+            <td>${data.profit.toFixed(2)}</td>
+        </tr>
+    `.replace(/[ \t\n]/g, '');
+};
 
 export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
     let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
@@ -25,15 +56,32 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
     amount += _leverage;
     const initialAmount = amount;
 
-    RATES.slice(-monthsCount).forEach((rate, i) => {
-        const updatedContract = getContractDelta_WOLoan(initialAmount + i * monthValue, contract);
-        if (updatedContract > 0) {
-            contract += updatedContract;
-            amount = roundTwo(amount - updatedContract * AJIO);
+    generateRates(monthsCount).forEach((rate, i) => {
+        let ajio;
+        const contractDelta = Math.ceil(getContractDelta_WOLoan(amount, contract, initialAmount + i * monthValue));
+        if (contractDelta > 0) {
+            contract += contractDelta;
+            ajio = contractDelta * AJIO;
+            amount = roundTwo(amount - ajio);
+        } else {
+            ajio = 0
         }
 
         const income = getIncome_WOLoan(amount, rate);
         const profit = getProfit(income, amount, _leverage);
+
+        const tableRow = createRow({
+            month: getMonthYear(monthsCount - i),
+            renewal: i === 0 ? enteredAmount : monthValue,
+            ajio: i === 0 ? contract * AJIO : ajio,
+            amount: amount - _leverage,
+            leverage: _leverage,
+            contract,
+            rate,
+            income,
+            profit,
+        });
+        elem('#detalization tbody').innerHTML += tableRow;
 
         amount = roundTwo(amount + profit + monthValue);
     });

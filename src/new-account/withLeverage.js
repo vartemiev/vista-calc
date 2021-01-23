@@ -6,8 +6,33 @@ export const getIncome = (amount, rate) => roundTwo((amount + leverage(amount)) 
 export const getProfit = (income, amount) => roundTwo(income - workFee(income) - serviceFee(amount + leverage(amount)) - loanFee(leverage(amount)));
 export const getContractDelta = (amount, contract) => Math.ceil((10 * amount - 3 * contract) / 3.7);
 
+
+export const createRow = (data) => {
+    const _leverage = leverage(data.amount);
+
+    return `
+        <tr>
+            <td>${data.month}</td>
+            <td>${data.renewal.toFixed(2)}</td>
+            <td>${data.contract.toFixed(2)}</td>
+            <td>${data.ajio.toFixed(2)}</td>
+            <td>${data.amount.toFixed(2)}</td>
+            <td>${_leverage.toFixed(2)}</td>
+            <td>${(data.amount + _leverage).toFixed(2)}</td>
+            <td>${data.rate.toFixed(2)}</td>
+            <td>${data.income.toFixed(2)}</td>
+            <td>${workFee(data.income).toFixed(2)}</td>
+            <td>${serviceFee(data.amount + _leverage).toFixed(2)}</td>
+            <td>${loanFee(_leverage).toFixed(2)}</td>
+            <td>${(data.amount + data.profit + _leverage).toFixed(2)}</td>
+            <td>${(data.amount + data.profit).toFixed(2)}</td>
+            <td>${data.profit.toFixed(2)}</td>
+        </tr>
+    `.replace(/[ \t\n]/g, '');
+};
+
 export const withLeverage = (enteredAmount, monthsCount, monthValue) =>
-    calculate(enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta);
+    calculate(enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow);
 
 export const getMaxWithdraw = (amount, contract) => {
     const contractDelta = getContractDelta(amount, contract);

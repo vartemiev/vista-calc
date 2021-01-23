@@ -6,8 +6,32 @@ export const getIncome = (amount, rate) => roundTwo((amount + loan(amount)) * ra
 export const getProfit = (income, amount) => roundTwo(income - workFee(income) - serviceFee(amount + loan(amount)) - loanFee(loan(amount)));
 export const getContractDelta = (amount, contract) => Math.ceil((1.7 * amount -  contract) / 1.119);
 
+export const createRow = (data) => {
+    const _loan = loan(data.amount);
+
+    return `
+        <tr>
+            <td>${data.month}</td>
+            <td>${data.renewal.toFixed(2)}</td>
+            <td>${data.contract.toFixed(2)}</td>
+            <td>${data.ajio.toFixed(2)}</td>
+            <td>${data.amount.toFixed(2)}</td>
+            <td>${_loan}</td>
+            <td>${(data.amount + _loan).toFixed(2)}</td>
+            <td>${data.rate.toFixed(2)}</td>
+            <td>${data.income.toFixed(2)}</td>
+            <td>${workFee(data.income).toFixed(2)}</td>
+            <td>${serviceFee(data.amount + _loan).toFixed(2)}</td>
+            <td>${loanFee(_loan).toFixed(2)}</td>
+            <td>${(data.amount + data.profit + _loan).toFixed(2)}</td>
+            <td>${(data.amount + data.profit).toFixed(2)}</td>
+            <td>${data.profit.toFixed(2)}</td>
+        </tr>
+    `.replace(/[ \t\n]/g, '');
+};
+
 export const withLoan = (enteredAmount, monthsCount, monthValue) =>
-    calculate(enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta);
+    calculate(enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow);
 
 export const getMaxWithdraw = (amount, contract) => {
     const contractDelta = getContractDelta(amount, contract);
