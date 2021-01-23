@@ -90,8 +90,10 @@ export const getFileName = () => {
     const months = +value('#monthsCount')
     const amount = +value('#init-amount');
     const monthValue = +value('#monthValue');
+    const EURRate = +elem('#eurValue').innerText;
+    const isRUB = elem('.currency.active').id === 'currency_RUB';
 
-    let fileName = `${amount}_`;
+    let fileName = `${isRUB ? Math.floor(amount / EURRate * 0.98) : amount}_`;
 
     switch (leverageStatus) {
         case LeverageStatus.WITH_LEVERAGE:
