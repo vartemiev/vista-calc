@@ -19,7 +19,7 @@ export const createRow = (data) => {
             <td>${data.amount.toFixed(2)}</td>
             <td>0.00</td>
             <td>${data.amount.toFixed(2)}</td>
-            <td>${data.rate.toFixed(2)}</td>
+            <td>${data.rate.toFixed(2)}%</td>
             <td>+${data.income.toFixed(2)}</td>
             <td>-${workFee(data.income).toFixed(2)}</td>
             <td>-${serviceFee(data.amount).toFixed(2)}</td>

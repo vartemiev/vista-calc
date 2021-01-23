@@ -32,7 +32,7 @@ export const createRow = (data) => {
             <td>${data.amount.toFixed(2)}</td>
             <td>${data.leverage.toFixed(2)}</td>
             <td>${(data.amount + data.leverage).toFixed(2)}</td>
-            <td>${data.rate.toFixed(2)}</td>
+            <td>${data.rate.toFixed(2)}%</td>
             <td>+${data.income.toFixed(2)}</td>
             <td>-${workFee(data.income).toFixed(2)}</td>
             <td>-${serviceFee(data.amount + data.leverage).toFixed(2)}</td>
@@ -75,8 +75,8 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
         const tableRow = createRow({
             month: getMonthYear(monthsCount - i),
             renewal: i === 0 ? enteredAmount : monthValue,
-            ajio: i === 0 ? contract * AJIO : ajio,
-            activation: i === 0 ? 100 : 0,
+            ajio: i === 0 ? -(contract * AJIO) : -ajio,
+            activation: i === 0 ? -100 : 0,
             amount: amount - _leverage,
             leverage: _leverage,
             contract,
@@ -99,9 +99,9 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
     document.querySelector('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
 
     elem('#detalization tbody').innerHTML += printResult(
-        amount - _leverage,
-        addedPerMonth * monthsCount + enteredAmount,
-        averageProfit
+        Math.round(amount - _leverage),
+        Math.round(addedPerMonth * monthsCount + enteredAmount),
+        Math.floor(averageProfit)
     );
 
     document.querySelector('#new-result').style.display = 'block';

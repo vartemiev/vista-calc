@@ -50,9 +50,9 @@ export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, get
     elem('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
 
     elem('#detalization tbody').innerHTML += printResult(
-        amount,
-        addedPerMonth * monthsCount + enteredAmount,
-        averageProfit
+        Math.round(amount),
+        Math.round(addedPerMonth * monthsCount + enteredAmount),
+        Math.floor(averageProfit)
     );
 
     show('#new-result');
