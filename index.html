@@ -93,6 +93,14 @@
     #cbRate_value {
       font-family: 'Montserrat', sans-serif;
     }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    td {
+      border: 1px solid black;
+    }
   </style>
 </head>
 
@@ -197,6 +205,11 @@
             <div class="result">Ежемесячные дивиденды:</div>
             <div class="digit" id="profit"></div>
           </div>
+          <div>
+            <button id="details" type="button" class="btn btn-sm btn-info" style="margin-top: 10px">
+              Детализация рассчета
+            </button>
+          </div>
         </div>
       </form>
 
@@ -230,6 +243,32 @@
           </div>
         </div>
       </form>
+
+      <div>
+        <table id="detalization" style="display: none">
+          <thead>
+            <tr>
+              <td>Месяц</td>
+              <td>Внесено</td>
+              <td>Контракт</td>
+              <td>Ажио</td>
+              <td>Своих</td>
+              <td>Займ</td>
+              <td>Баланс</td>
+              <td>Доходность</td>
+              <td>Начислено</td>
+              <td>Управл (-20%)</td>
+              <td>Обсл (-1/12%)</td>
+              <td>Займ (-7/12%)</td>
+              <td>Баланс</td>
+              <td>Своих</td>
+              <td>Прибыль</td>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
     </div>
   </body>
 
