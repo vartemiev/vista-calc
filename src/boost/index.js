@@ -25,6 +25,6 @@ export const calculateBoost = () => {
         elem('#result_balance__value').innerText = `${format(amount)} EUR`;
     }
 
-    elem('#result_leverage__value').innerText = `${format(Math.floor(leverage(amount)))} EUR`;
+    elem('#result_leverage__value').innerText = `${format(leverage(amount))} EUR`;
     show('#result');
 };
