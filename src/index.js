@@ -6,7 +6,7 @@ import {
     AJIO,
 } from './constants';
 
-import { formatDate, roundTwo, show, hide, value, elem, elems } from './utils';
+import { formatDate, roundTwo, show, hide, value, elem, elems, getFileName } from './utils';
 
 import { withLeverage, getMaxWithdraw as getMaxWithdraw_WLeverage } from './new-account/withLeverage';
 import { withoutLoan, getMaxWithdraw as getMaxWithdraw_WOLoan } from './new-account/withoutLoan';
@@ -267,5 +267,5 @@ const tableToExcel = (table, name, fileName) => {
 }
 
 elem('#details').addEventListener('click', () =>
-    tableToExcel('detalization', 'Детализация', 'Details.xls')
+    tableToExcel('detalization', 'Детализация', `${getFileName()}.xls`)
 );

@@ -13,15 +13,16 @@ export const createRow = (data) => {
         <tr>
             <td>${data.month}</td>
             <td>${data.renewal.toFixed(2)}</td>
+            <td>${data.activation}</td>
             <td>${data.contract.toFixed(2)}</td>
             <td>${data.ajio.toFixed(2)}</td>
             <td>${data.amount.toFixed(2)}</td>
             <td>0.00</td>
             <td>${data.amount.toFixed(2)}</td>
             <td>${data.rate.toFixed(2)}</td>
-            <td>${data.income.toFixed(2)}</td>
-            <td>${workFee(data.income).toFixed(2)}</td>
-            <td>${serviceFee(data.amount).toFixed(2)}</td>
+            <td>+${data.income.toFixed(2)}</td>
+            <td>-${workFee(data.income).toFixed(2)}</td>
+            <td>-${serviceFee(data.amount).toFixed(2)}</td>
             <td>0.00</td>
             <td>${balance}</td>
             <td>${balance}</td>

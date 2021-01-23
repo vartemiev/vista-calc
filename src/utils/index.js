@@ -1,4 +1,12 @@
-import { LOAN_RATIO, MONTHS, RATES, MONTHS_COUNT, MONTHS_DETAILS } from '../constants';
+import {
+    LOAN_RATIO,
+    MONTHS,
+    RATES,
+    MONTHS_COUNT,
+    MONTHS_DETAILS,
+    LeverageStatus,
+    RestockingStatus
+} from '../constants';
 
 export const roundTwo = amount => +amount.toFixed(2);
 
@@ -75,3 +83,61 @@ export const getMonthYear = (monthsCount) => {
 
     return `${MONTHS_DETAILS[+month - 1]}&nbsp;${year}`;
 }
+
+export const getFileName = () => {
+    const leverageStatus = elem('[name="radio-group1"]:checked').id;
+    const restockingStatus = elem('[name="radio-group2"]:checked').id;
+    const months = +value('#monthsCount')
+    const amount = +value('#init-amount');
+    const monthValue = +value('#monthValue');
+
+    let fileName = `${amount}_`;
+
+    switch (leverageStatus) {
+        case LeverageStatus.WITH_LEVERAGE:
+            fileName += 'Прокачка_';
+            break;
+        case LeverageStatus.ONCE_UPDATE:
+            fileName += 'ОднаПрокачка_';
+            break;
+        case LeverageStatus.WITH_LOAN:
+            fileName += 'Займ_';
+            break;
+        case LeverageStatus.WITHOUT_LOAN:
+            fileName += 'БезЗайма_';
+            break;
+    }
+
+    switch (restockingStatus) {
+        case RestockingStatus.ADD_MONTHLY:
+            fileName += `Пололнение${monthValue}_`;
+            break;
+        case RestockingStatus.REMOVE_MONTHLY:
+            fileName += `Снятие${monthValue}_`;
+            break;
+    }
+
+    return `${fileName}Месяцев${months}`;
+}
+
+export const printResult = (amount, our, dividends) => `
+        <tr></tr>
+        <tr>
+            <td>Вложено</td>
+            <td>своих:</td>
+            <td>${our}</td>
+            <td>EUR</td>
+        </tr>
+        <tr>
+            <td>Доступно</td>
+            <td>к снятию:</td>
+            <td>${amount}</td>
+            <td>EUR</td> 
+        </tr>
+        <tr>
+            <td>Ежемесячные</td>
+            <td>дивиденды:</td>
+            <td>${dividends}</td>
+            <td>EUR</td> 
+        </tr>
+`

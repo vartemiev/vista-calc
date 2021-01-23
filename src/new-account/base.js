@@ -1,5 +1,5 @@
 import { AJIO, AVERAGE_RATE, MIN_CONTRACT } from '../constants';
-import { roundTwo, format, elem, show, generateRates, getMonthYear } from '../utils';
+import { roundTwo, format, elem, show, generateRates, getMonthYear, printResult } from '../utils';
 
 export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow) => {
     let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
@@ -25,7 +25,8 @@ export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, get
                 const tableRow = createRow({
                     month: getMonthYear(monthsCount - i),
                     renewal: i === 0 ? enteredAmount : monthValue,
-                    ajio: i === 0 ? contract * AJIO : ajio,
+                    ajio: i === 0 ? -(contract * AJIO) : -ajio,
+                    activation: i === 0 ? -100 : 0,
                     contract,
                     amount,
                     rate,
@@ -47,6 +48,12 @@ export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, get
     elem('#amount').innerText = `${format(amount)} EUR`;
     elem('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
     elem('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
+
+    elem('#detalization tbody').innerHTML += printResult(
+        amount,
+        addedPerMonth * monthsCount + enteredAmount,
+        averageProfit
+    );
 
     show('#new-result');
 };
