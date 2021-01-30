@@ -73,7 +73,7 @@
       cursor: pointer;
     }
 
-    #RUB-info {
+    #RUB-info, #convert-EUR_info {
       font-size: 13px;
       padding-left: 14px;
       padding-top: 5px;
@@ -85,12 +85,12 @@
       font-size: 16px;
     }
 
-    #cbRate {
+    #cbRate, #convert-EUR_cbRate {
       color: grey;
       font-size: 15px;
     }
 
-    #cbRate_value {
+    #cbRate_value, #convert-EUR_cbRate__value {
       font-family: 'Montserrat', sans-serif;
     }
 
@@ -116,6 +116,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" id="leverage-tab" href="#">Прокачка</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="convert-EUR-tab" href="#">Конвертер</a>
         </li>
       </ul>
 
@@ -194,6 +197,14 @@
 
         <div id="new-result" class="leverage-result" style="display: none;">
           <div>
+            <div class="result">Активация счета:</div>
+            <div class="digit">-100 EUR</div>
+          </div>
+          <div>
+            <div class="result">Ажио:</div>
+            <div class="digit" id="ajio">100 EUR</div>
+          </div>
+          <div>
             <div class="result">Доступно к снятию на конец срока:</div>
             <div class="digit" id="amount"></div>
           </div>
@@ -242,6 +253,28 @@
             <div class="digit" id="result_leverage__value"></div>
           </div>
         </div>
+      </form>
+
+      <form id="convert-EUR" style="margin: 15px">
+        <div class="form-group">
+          <label for="convert-EUR_amount">Сумма для пополнения (EUR)</label>
+          <input type="number" id="convert-EUR_amount" class="form-control form-input" value="">
+          <span id="convert-EUR_cbRate">
+            <span>&times; </span><span id="convert-EUR_cbRate__value"></span>
+          </span>
+
+          <div id="convert-EUR_info">
+            <div>
+              <span>Комиссия: </span>
+              <span id="convert-EUR_info__fee" class="digit-sm"></span>
+            </div>
+            <div>
+              <span>Сумма для пополнения (RUB): </span>
+              <span id="convert-EUR_info__value" class="digit-sm"></span>
+            </div>
+          </div>
+        </div>
+
       </form>
 
       <div>
