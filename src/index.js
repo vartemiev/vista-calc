@@ -120,25 +120,45 @@ const updateRUBInfo = () => {
 const init = () => {
     const accTab = elem('#new-account-tab');
     const levTab = elem('#leverage-tab');
+    const convTab = elem('#convert-EUR-tab');
 
     accTab.addEventListener('click', () => {
         accTab.classList.add('active')
+        convTab.classList.remove('active')
         levTab.classList.remove('active');
 
         show('#new-account');
         hide('#leverage');
+        hide('#convert-EUR');
 
         elem('#leverage').reset();
+        elem('#convert-EUR').reset();
     });
 
     levTab.addEventListener('click', () => {
         accTab.classList.remove('active')
+        convTab.classList.remove('active')
         levTab.classList.add('active');
 
         hide('#new-account');
+        hide('#convert-EUR');
         show('#leverage');
 
         elem('#new-account').reset();
+        elem('#convert-EUR').reset();
+    });
+
+    convTab.addEventListener('click', () => {
+        accTab.classList.remove('active')
+        levTab.classList.remove('active')
+        convTab.classList.add('active');
+
+        hide('#new-account');
+        hide('#leverage');
+        show('#convert-EUR');
+
+        elem('#new-account').reset();
+        elem('#leverage').reset();
     });
 
 
@@ -220,8 +240,18 @@ const init = () => {
         updateWithdrawAmount();
 
         if (elem('.currency.active').id === 'currency_RUB') {
-            updateRUBInfo();
+            updateRUBInfo()
         }
+    });
+
+    elem('#convert-EUR_amount').addEventListener('input', (e) => {
+        const value = e.target.value;
+
+        const fee = Math.ceil(value * EURRate * 0.02);
+        const valueRUB = Math.ceil(value * EURRate * 1.02);
+
+        elem('#convert-EUR_info__fee').innerText = `${fee} RUB`;
+        elem('#convert-EUR_info__value').innerText = `${valueRUB} RUB`;
     });
 
     accTab.click();
@@ -233,6 +263,7 @@ const init = () => {
 
             elem('#eurValue').innerText = EURRate;
             elem('#cbRate_value').innerText = EURRate;
+            elem('#convert-EUR_cbRate__value').innerText = EURRate;
             elem('#eurDate').innerText = formatDate(daylyInfo.Date);
             show('#eurRate');
         });

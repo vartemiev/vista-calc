@@ -3,7 +3,8 @@ import { roundTwo, format, elem, show, generateRates, getMonthYear, printResult 
 
 export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow) => {
     let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
-    let amount = Math.round((enteredAmount - 100) - contract * AJIO);
+    let initialAjio = contract * AJIO;
+    let amount = Math.round((enteredAmount - 100) - initialAjio);
 
     const initialAmount = amount;
     generateRates(monthsCount).forEach(
@@ -13,6 +14,11 @@ export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, get
             if (contractDelta > 0) {
                 contract += contractDelta;
                 ajio = contractDelta * AJIO;
+
+                if (i === 0) {
+                    initialAjio += ajio;
+                }
+
                 amount = roundTwo(amount - ajio);
             } else {
                 ajio = 0;
@@ -46,6 +52,7 @@ export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, get
     const addedPerMonth = monthValue > 0 ? monthValue : 0;
 
     elem('#amount').innerText = `${format(amount)} EUR`;
+    elem('#ajio').innerText = `${-format(initialAjio)} EUR`;
     elem('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
     elem('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
 

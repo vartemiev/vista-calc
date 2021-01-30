@@ -46,11 +46,13 @@ export const createRow = (data) => {
 
 export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
     let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
-    let amount = Math.round((enteredAmount - 100) - AJIO * contract);
+    let initialAjio = contract * AJIO;
+    let amount = Math.round((enteredAmount - 100) - initialAjio);
 
     const contractDelta = getContractDelta_WLeverage(amount, contract);
     if (contractDelta > 0) {
         contract += contractDelta;
+        initialAjio += contractDelta * AJIO;
         amount = roundTwo(amount - contractDelta * AJIO);
     }
 
@@ -94,9 +96,10 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
     const averageProfit = getProfit_WLoan(averageIncome, amount);
     const addedPerMonth = monthValue > 0 ? monthValue : 0;
 
-    document.querySelector('#amount').innerText = `${format(amount - _leverage)} EUR`;
-    document.querySelector('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
-    document.querySelector('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
+    elem('#amount').innerText = `${format(amount - _leverage)} EUR`;
+    elem('#ajio').innerText = `${-format(initialAjio)} EUR`;
+    elem('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
+    elem('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
 
     elem('#detalization tbody').innerHTML += printResult(
         Math.round(amount - _leverage),
