@@ -101,6 +101,56 @@
     td {
       border: 1px solid black;
     }
+
+    .help-icon {
+      margin-bottom: 6px;
+      margin-left: 5px;
+    }
+    /* Tooltip container */
+    .vista-tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Tooltip text */
+    .vista-tooltip .tooltiptext {
+      padding: 5px;
+      visibility: hidden;
+      width: 125px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+
+      /* Position the tooltip text */
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -60px;
+
+      /* Fade in tooltip */
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Tooltip arrow */
+    .vista-tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .vista-tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
 </head>
 
@@ -265,12 +315,15 @@
 
           <div id="convert-EUR_info">
             <div>
-              <span>Комиссия: </span>
-              <span id="convert-EUR_info__fee" class="digit-sm"></span>
-            </div>
-            <div>
               <span>Сумма для пополнения (RUB): </span>
-              <span id="convert-EUR_info__value" class="digit-sm"></span>
+              <span id="convert-EUR_info__value" class="digit-sm">0 RUB</span>
+              <span class="vista-tooltip">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle help-icon" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                  <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+                <span class="tooltiptext">Сумма в рублях по курсу ЦБ включая 2% за завод денег на счет Vista</span>
+              </span>
             </div>
           </div>
         </div>
