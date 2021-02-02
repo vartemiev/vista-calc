@@ -170,6 +170,9 @@ const init = () => {
         e.preventDefault();
         calculateBoost();
     });
+    elem('#convert-EUR').addEventListener('reset', () => {
+        elem('#convert-EUR_info__value').innerText = `0 RUB`;
+    });
 
     elem('#removeMonthly').addEventListener('change', () => {
         elem('#monthValue').value = '';
@@ -246,11 +249,8 @@ const init = () => {
 
     elem('#convert-EUR_amount').addEventListener('input', (e) => {
         const value = e.target.value;
-
-        const fee = Math.ceil(value * EURRate * 0.02);
         const valueRUB = Math.ceil(value * EURRate * 1.02);
 
-        elem('#convert-EUR_info__fee').innerText = `${fee} RUB`;
         elem('#convert-EUR_info__value').innerText = `${valueRUB} RUB`;
     });
 
