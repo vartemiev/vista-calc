@@ -52,7 +52,7 @@ export const calculate = (enteredAmount, monthsCount, monthValue, getIncome, get
     const addedPerMonth = monthValue > 0 ? monthValue : 0;
 
     elem('#amount').innerText = `${format(amount)} EUR`;
-    elem('#ajio').innerText = `${-format(initialAjio)} EUR`;
+    elem('#ajio').innerText = `-${format(initialAjio)} EUR`;
     elem('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
     elem('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
 

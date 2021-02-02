@@ -97,7 +97,7 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
     const addedPerMonth = monthValue > 0 ? monthValue : 0;
 
     elem('#amount').innerText = `${format(amount - _leverage)} EUR`;
-    elem('#ajio').innerText = `${-format(initialAjio)} EUR`;
+    elem('#ajio').innerText = `-${format(initialAjio)} EUR`;
     elem('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
     elem('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
 
