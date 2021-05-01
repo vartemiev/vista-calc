@@ -126,7 +126,8 @@ export const RATES = [
     1.17,
     0.18,
     2.61,
-    2.07, // Март 2021
+    2.07,
+    2.16, // Апрель 2021
 ];
 
 export const MIN_CONTRACT = 10000;
