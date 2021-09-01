@@ -4,7 +4,7 @@
   "description": "Vista calculator",
   "main": "src/index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack && cp ./src/index.html ./dist ",
     "deploy": "npm run build && gh-pages -d dist",
     "start": "webpack-dev-server --inline --hot",
     "test": "npm run deploy"
