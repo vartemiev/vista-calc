@@ -63,7 +63,12 @@ const calculateValue = () => {
     const leverageStatus = elem('[name="radio-group1"]:checked').id;
     const restockingStatus = elem('[name="radio-group2"]:checked').id;
 
-    const monthsCount = +value('#monthsCount');
+    const isYearsTabSelected = elem('.period.active').id === 'years';
+
+    const monthsCount = isYearsTabSelected ?
+        +value('#monthsCount') * 12 :
+        +value('#monthsCount');
+
     const monthValue = defineAmount(restockingStatus);
 
     let enteredAmount = +value('#init-amount');
@@ -237,6 +242,24 @@ const init = () => {
             hide('#cbRate');
             hide('#RUB-info');
         }
+    });
+
+    elem('#period').addEventListener('click', (e) => {
+        if (!e.target.classList.contains('period')) {
+            return;
+        }
+
+        const isYearsTabActive = e.target.id === 'years';
+        const periodValue = elem('#monthsCount').value;
+
+        if (periodValue) {
+            elem('#monthsCount').value = isYearsTabActive ?
+                Math.ceil(+periodValue / 12) :
+                +periodValue * 12
+        }
+
+        elems('.period').forEach(el => el.classList.remove('active'));
+        e.target.classList.add('active');
     });
 
     elem('#init-amount').addEventListener('input', () => {

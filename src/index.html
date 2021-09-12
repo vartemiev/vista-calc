@@ -60,6 +60,11 @@
       font-size: 12px;
       cursor: pointer;
     }
+    .period {
+      color: #226ede;
+      font-size: 12px;
+      cursor: pointer;
+    }
 
     .currency.active {
       color: #04d23a;
@@ -67,8 +72,18 @@
       font-weight: bold;
       cursor: pointer;
     }
+    .period.active {
+      color: #04d23a;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-    .currency:hover {
+    .period:hover {
+      color: #04d23a;
+      cursor: pointer;
+    }
+    .period:hover {
       color: #04d23a;
       cursor: pointer;
     }
@@ -240,7 +255,8 @@
           </div>
         </div>
         <div class="form-group" id="new-monthsCount">
-          <label for="monthsCount">Количество месяцев</label>
+          <label for="monthsCount">Период </label>
+          ( <span id="period"><span id="month" class="period active">Месяцев</span> | <span id="years" class="period">Лет</span></span> )
           <input type="number" id="monthsCount" class="form-control form-input" required min="1">
         </div>
         <button type="submit" class="btn btn-success" id="calculate">Рассчитать</button>
