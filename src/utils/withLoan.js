@@ -1,14 +1,13 @@
 import { calculate } from './base';
+import { roundTwo, workFee, serviceFee, loanFee, loan } from './helpers';
 import { AJIO, AVERAGE_RATE } from '../constants';
-import { roundTwo, workFee, serviceFee, leverage, loanFee } from '../utils';
 
-export const getIncome = (amount, rate) => roundTwo((amount + leverage(amount)) * rate / 100);
-export const getProfit = (income, amount) => roundTwo(income - workFee(income) - serviceFee(amount + leverage(amount)) - loanFee(leverage(amount)));
-export const getContractDelta = (amount, contract) => Math.ceil((10 * amount - 3 * contract) / 3.7);
-
+export const getIncome = (amount, rate) => roundTwo((amount + loan(amount)) * rate / 100);
+export const getProfit = (income, amount) => roundTwo(income - workFee(income) - serviceFee(amount + loan(amount)) - loanFee(loan(amount)));
+export const getContractDelta = (amount, contract) => Math.ceil((1.7 * amount -  contract) / 1.119);
 
 export const createRow = (data) => {
-    const _leverage = leverage(data.amount);
+    const _loan = loan(data.amount);
 
     return `
         <tr>
@@ -18,22 +17,22 @@ export const createRow = (data) => {
             <td>${data.contract.toFixed(2)}</td>
             <td>${data.ajio.toFixed(2)}</td>
             <td>${data.amount.toFixed(2)}</td>
-            <td>${_leverage.toFixed(2)}</td>
-            <td>${(data.amount + _leverage).toFixed(2)}</td>
+            <td>${_loan}</td>
+            <td>${(data.amount + _loan).toFixed(2)}</td>
             <td>${data.rate.toFixed(2)}%</td>
             <td>+${data.income.toFixed(2)}</td>
             <td>-${workFee(data.income).toFixed(2)}</td>
-            <td>-${serviceFee(data.amount + _leverage).toFixed(2)}</td>
-            <td>-${loanFee(_leverage).toFixed(2)}</td>
-            <td>${(data.amount + data.profit + _leverage).toFixed(2)}</td>
+            <td>-${serviceFee(data.amount + _loan).toFixed(2)}</td>
+            <td>-${loanFee(_loan).toFixed(2)}</td>
+            <td>${(data.amount + data.profit + _loan).toFixed(2)}</td>
             <td>${(data.amount + data.profit).toFixed(2)}</td>
             <td>${data.profit.toFixed(2)}</td>
         </tr>
     `.replace(/[ \t\n]/g, '');
 };
 
-export const withLeverage = (enteredAmount, monthsCount, monthValue) =>
-    calculate(enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow);
+export const withLoan = (enteredAmount, monthsCount, monthValue, contract, isNew) =>
+    calculate(enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow, contract, isNew);
 
 export const getMaxWithdraw = (amount, contract) => {
     const contractDelta = getContractDelta(amount, contract);

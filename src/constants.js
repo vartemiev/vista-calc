@@ -1,14 +1,16 @@
-export const RestockingStatus = {
-    NO_ADD_NO_REMOVE: 'noAddNoRemove',
-    REMOVE_MONTHLY: 'removeMonthly',
-    ADD_MONTHLY: 'addMonthly',
+export const Leverage = {
+    LEVERAGE: 'LEVERAGE',
+    ONCE: 'ONCE',
+    LOAN: 'LOAN',
+    NONE: 'NONE',
 };
-export const LeverageStatus = {
-    WITH_LEVERAGE: 'withLeverage',
-    WITHOUT_LOAN: 'withoutLoan',
-    ONCE_UPDATE: 'onceUpdate',
-    WITH_LOAN: 'withLoan',
+
+export const Withdraw = {
+    ADD: 'ADD',
+    NONE: 'NONE',
+    REMOVE: 'REMOVE',
 };
+
 export const MONTHS = [
     'января',
     'февраля',
@@ -134,7 +136,7 @@ export const RATES = [
     2.34,
     2.52,
     2.41,
-    1.8, // Ноябрь 2021
+    1.8,
 ];
 
 export const MIN_CONTRACT = 10000;
@@ -142,3 +144,14 @@ export const AVERAGE_RATE = 1.95;
 export const LOAN_RATIO = 0.7;
 export const AJIO = 0.07;
 export const MONTHS_COUNT = 12;
+export const MIN_AMOUNT = 1100;
+
+export const Periods = {
+    MONTH: 'MONTH',
+    YEAR: 'YEAR',
+};
+
+export const PeriodsTranslations = {
+    [Periods.MONTH]: 'Месяцев',
+    [Periods.YEAR]: 'Лет',
+};

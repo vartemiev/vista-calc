@@ -1,5 +1,5 @@
 import { calculate } from './base';
-import { roundTwo, workFee, serviceFee } from '../utils';
+import { roundTwo, workFee, serviceFee } from './helpers';
 import { AVERAGE_RATE } from '../constants';
 
 export const getIncome = (amount, rate) => roundTwo(amount * rate / 100);
@@ -31,8 +31,8 @@ export const createRow = (data) => {
     `.replace(/[ \t\n]/g, '');
 };
 
-export const withoutLoan = (enteredAmount, monthsCount, monthValue) =>
-    calculate(enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow);
+export const withoutLoan = (enteredAmount, monthsCount, monthValue, contract, isNew) =>
+    calculate(enteredAmount, monthsCount, monthValue, getIncome, getProfit, getContractDelta, createRow, contract, isNew);
 
 export const getMaxWithdraw = amount => {
     const income = getIncome(amount, AVERAGE_RATE);

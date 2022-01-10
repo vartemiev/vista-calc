@@ -1,0 +1,180 @@
+.App {
+  text-align: center;
+  margin: 20px;
+}
+
+.required-field {
+  color: red;
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+  width: 40%;
+  gap: 20px;
+}
+
+.input-container__label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.cb-rate {
+  display: flex;
+  gap: 6px;
+
+  font-family: 'Montserrat', sans-serif;
+  padding-bottom: 10px;
+  font-size: 16px;
+}
+
+.cb-rate__grey {
+  color: #9c9c9c
+}
+
+.RUB-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  font-size: 13px;
+  padding-left: 14px;
+  padding-top: 5px;
+}
+
+.RUB-info__block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.Radio-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: start;
+  align-items: start;
+  padding: 5px;
+}
+
+.Radio-group__block {
+  display: grid;
+  justify-items: start;
+}
+
+.Radio-group__item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.leverage-result {
+  background-color: #b5eab4;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: right;
+  font-size: 1rem;
+}
+
+.digit {
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.digit-sm {
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+
+.form-input {
+  font-size: 18px;
+  font-family: 'Comfortaa', cursive;
+  border: 2px solid #8ad697;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+  display: inline;
+}
+
+.toggler {
+  color: #226ede;
+  font-size: 12px;
+  cursor: pointer;
+}
+.toggler.active {
+  color: #04d23a;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.toggler:hover {
+  color: #04d23a;
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td {
+  border: 1px solid black;
+}
+
+/* Tooltip container */
+.vista-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.vista-tooltip__text {
+  padding: 5px;
+  visibility: hidden;
+  width: 125px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.vista-tooltip .vista-tooltip__text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.vista-tooltip:hover .vista-tooltip__text {
+  visibility: visible;
+  opacity: 1;
+}

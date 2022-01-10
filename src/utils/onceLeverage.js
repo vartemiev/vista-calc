@@ -1,4 +1,4 @@
-import { AJIO, AVERAGE_RATE, MIN_CONTRACT, RATES } from '../constants';
+import { AJIO, AVERAGE_RATE, MIN_CONTRACT } from '../constants';
 import {
     roundTwo,
     serviceFee,
@@ -8,9 +8,9 @@ import {
     leverage,
     generateRates,
     getMonthYear,
-    printResult,
-    elem,
-} from '../utils';
+    detalizationResult,
+    createDetailazationTable,
+} from './helpers';
 
 import { getProfit as getProfit_WLoan } from './withLoan';
 import { getContractDelta as getContractDelta_WLeverage } from './withLeverage';
@@ -44,10 +44,16 @@ export const createRow = (data) => {
     `.replace(/[ \t\n]/g, '');
 };
 
-export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
-    let contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
-    let initialAjio = contract * AJIO;
-    let amount = Math.round((enteredAmount - 100) - initialAjio);
+export const onceLeverage = (enteredAmount, monthsCount, monthValue, actualContract = MIN_CONTRACT, isNew = true) => {
+    let initialAjio = 0;
+    let contract = actualContract;
+    let amount = enteredAmount;
+
+    if (isNew) {
+        contract = enteredAmount - 100 > MIN_CONTRACT ? enteredAmount - 100 : MIN_CONTRACT;
+        initialAjio = contract * AJIO;
+        amount = Math.round((enteredAmount - 100) - initialAjio);
+    }
 
     const contractDelta = getContractDelta_WLeverage(amount, contract);
     if (contractDelta > 0) {
@@ -59,6 +65,8 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
     const _leverage = leverage(amount);
     amount += _leverage;
     const initialAmount = amount;
+
+    const detalizationTable = createDetailazationTable();
 
     generateRates(monthsCount).forEach((rate, i) => {
         let ajio;
@@ -86,7 +94,7 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
             income,
             profit,
         });
-        elem('#detalization tbody').innerHTML += tableRow;
+        detalizationTable.querySelector('tbody').innerHTML += tableRow;
 
         amount = roundTwo(amount + profit + monthValue);
     });
@@ -96,16 +104,17 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue) => {
     const averageProfit = getProfit_WLoan(averageIncome, amount);
     const addedPerMonth = monthValue > 0 ? monthValue : 0;
 
-    elem('#amount').innerText = `${format(amount - _leverage)} EUR`;
-    elem('#ajio').innerText = `-${format(initialAjio)} EUR`;
-    elem('#our').innerText = `${format(addedPerMonth * monthsCount + enteredAmount)} EUR`;
-    elem('#profit').innerText = `${format(Math.floor(averageProfit))} EUR`;
-
-    elem('#detalization tbody').innerHTML += printResult(
+    detalizationTable.querySelector('tbody').innerHTML += detalizationResult(
         Math.round(amount - _leverage),
         Math.round(addedPerMonth * monthsCount + enteredAmount),
         Math.floor(averageProfit)
     );
 
-    document.querySelector('#new-result').style.display = 'block';
+    return {
+        amount: format(amount - _leverage),
+        initialAjio: format(initialAjio),
+        selfFunds: format(addedPerMonth * monthsCount + enteredAmount),
+        profit: format(Math.floor(averageProfit)),
+        detalizationTable,
+    };
 }
