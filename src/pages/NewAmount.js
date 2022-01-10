@@ -213,20 +213,24 @@ export const NewAmount = () => {
                 return;
             }
 
+            const amount = activeCurrency === Currency.RUB ?
+                initValue / EURRate * 0.98 :
+                +initValue;
+
             const _monthValue = withdraw === Withdraw.REMOVE ? -monthValue : +monthValue;
 
             switch (leverage) {
                 case Leverage.ONCE:
-                    return setCalculationResult(onceLeverage(+initValue, +period, _monthValue));
+                    return setCalculationResult(onceLeverage(amount, +period, _monthValue));
                 case Leverage.LOAN:
-                    return setCalculationResult(withLoan(+initValue, +period, _monthValue));
+                    return setCalculationResult(withLoan(amount, +period, _monthValue));
                 case Leverage.LEVERAGE:
-                    return setCalculationResult(withLeverage(+initValue, +period, _monthValue));
+                    return setCalculationResult(withLeverage(amount, +period, _monthValue));
                 case Leverage.NONE:
-                    return setCalculationResult(withoutLoan(+initValue, +period, _monthValue));
+                    return setCalculationResult(withoutLoan(amount, +period, _monthValue));
             }
         },
-        [initValue, period, leverage, withdraw, monthValue, onValidate]
+        [initValue, period, leverage, withdraw, monthValue, onValidate, activeCurrency]
     );
 
     return (
