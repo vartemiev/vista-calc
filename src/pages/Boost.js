@@ -135,7 +135,7 @@ export const Boost = () => {
 
             </label>
 
-            <button className="btn btn-success" style={{ width: '20%' }} onClick={onCalculateResult}>
+            <button className="btn btn-success calc-btn" onClick={onCalculateResult}>
                 Рассчитать
             </button>
 
