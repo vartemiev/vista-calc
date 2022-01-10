@@ -47,7 +47,7 @@ function App() {
                 <ul className="nav nav-tabs">
                     <li className="nav-item">
                         <a
-                            className={classNames({'nav-link': true, 'active': tab === Tabs.NEW})}
+                            className={classNames({'nav-link nav-link-sm': true, 'active': tab === Tabs.NEW})}
                             id="new-account-tab"
                             href="#"
 
@@ -58,18 +58,18 @@ function App() {
                     </li>
                     <li className="nav-item">
                         <a
-                            className={classNames({'nav-link': true, 'active': tab === Tabs.CURRENT})}
+                            className={classNames({'nav-link nav-link-sm': true, 'active': tab === Tabs.CURRENT})}
                             id="new-account-tab"
                             href="#"
 
                             onClick={() => setTab(Tabs.CURRENT)}
                         >
-                            Существующий счет
+                            Действующий счет
                         </a>
                     </li>
                     <li className="nav-item">
                         <a
-                            className={classNames({'nav-link': true, 'active': tab === Tabs.LEVERAGE})}
+                            className={classNames({'nav-link nav-link-sm': true, 'active': tab === Tabs.LEVERAGE})}
                             id="leverage-tab"
                             href="#"
 
@@ -80,7 +80,7 @@ function App() {
                     </li>
                     <li className="nav-item">
                         <a
-                            className={classNames({'nav-link': true, 'active': tab === Tabs.CONVERTER})}
+                            className={classNames({'nav-link nav-link-sm': true, 'active': tab === Tabs.CONVERTER})}
                             id="convert-EUR-tab"
                             href="#"
 
