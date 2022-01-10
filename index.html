@@ -1,1 +1,379 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><link rel="icon" href="/favicon.ico"/><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Nunito:wght@200&family=Thasadith&family=Montserrat:wght@300&display=swap&family=Comfortaa:wght@500" rel="stylesheet"><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><script defer="defer" src="/static/js/main.5c7282c9.js"></script><link href="/static/css/main.a4d66d05.css" rel="stylesheet"></head><body><div id="root"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Nunito:wght@200&family=Thasadith&family=Montserrat:wght@300&display=swap&family=Comfortaa:wght@500" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .form-input {
+      font-size: 18px;
+      font-family: 'Comfortaa', cursive;
+      border: 2px solid #8ad697;
+    }
+
+    .digit {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    .digit-sm {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .leverage-result {
+      background-color: #b5eab4;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+      text-align: right;
+      font-size: 1rem;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+      width: 85%;
+      display: inline;
+    }
+
+    .currency {
+      color: #226ede;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .period {
+      color: #226ede;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .currency.active {
+      color: #04d23a;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .period.active {
+      color: #04d23a;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .period:hover {
+      color: #04d23a;
+      cursor: pointer;
+    }
+    .period:hover {
+      color: #04d23a;
+      cursor: pointer;
+    }
+
+    #RUB-info, #convert-EUR_info {
+      font-size: 13px;
+      padding-left: 14px;
+      padding-top: 5px;
+    }
+
+    #eurRate {
+      padding: 10px 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+    }
+
+    #cbRate, #convert-EUR_cbRate {
+      color: grey;
+      font-size: 15px;
+    }
+
+    #cbRate_value, #convert-EUR_cbRate__value {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    td {
+      border: 1px solid black;
+    }
+
+    .help-icon {
+      margin-bottom: 6px;
+      margin-left: 5px;
+    }
+    /* Tooltip container */
+    .vista-tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Tooltip text */
+    .vista-tooltip .tooltiptext {
+      padding: 5px;
+      visibility: hidden;
+      width: 125px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+
+      /* Position the tooltip text */
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -60px;
+
+      /* Fade in tooltip */
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Tooltip arrow */
+    .vista-tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .vista-tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+
+  <body>
+    <div class="container" style="margin: 20px 100px; width: 50%">
+      <div id="eurRate" style="display: none;" >
+        <span style="color: #9c9c9c">Курс ЦБ EUR / RUB:</span> <span id="eurValue"></span> (<span style="color: #9c9c9c" id="eurDate"></span>)
+      </div>
+
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" id="new-account-tab" href="#">Новый счет</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="leverage-tab" href="#">Прокачка (Помощь друга)</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="convert-EUR-tab" href="#">Конвертер</a>
+        </li>
+      </ul>
+
+      <form id="new-account" style="margin: 15px">
+        <div class="form-group">
+          <label for="init-amount">Начальная сумма</label> ( <span id="currency"><span id="currency_EUR" class="currency active">EUR</span> | <span id="currency_RUB" class="currency">RUB</span></span> )
+          <input type="number" id="init-amount" class="form-control form-input" required min="1100" value="">
+          <span id="cbRate" style="display:none;">
+            <span>&divide; </span><span id="cbRate_value"></span>
+          </span>
+
+          <div id="RUB-info" style="display: none">
+            <div>
+              <span>Комиссия: </span>
+              <span id="RUB-info_fee" class="digit-sm"></span>
+            </div>
+            <div>
+              <span>Сумма для пополнения счета</span>
+              <span id="RUB-info_value" class="digit-sm"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="padding: 5px" >
+          <div class="form-group col-sm-6" id="radio-group1">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="withLeverage" name="radio-group1" checked>
+              <label class="custom-control-label" for="withLeverage">С ежемесячной прокачкой</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="onceUpdate" name="radio-group1">
+              <label class="custom-control-label" for="onceUpdate">Прокачать один раз</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="withLoan" name="radio-group1">
+              <label class="custom-control-label" for="withLoan">С займом 70% каждый месяц</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="withoutLoan" name="radio-group1">
+              <label class="custom-control-label" for="withoutLoan">Без займа</label>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-6" id="radio-group2">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="noAddNoRemove" name="radio-group2" checked>
+              <label class="custom-control-label" for="noAddNoRemove">Не снимать и не пополнять</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="addMonthly" name="radio-group2">
+              <label class="custom-control-label" for="addMonthly">Пополнять ежемесячно</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="removeMonthly" name="radio-group2">
+              <label class="custom-control-label" for="removeMonthly">Снимать ежемесячно</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" id="new-monthlyValue" style="display: none">
+          <label for="monthValue" id="withdrawLabel" style="display: none">Сумма ежемесячного cнятия</label>
+          <label for="monthValue" id="addLabel" style="display: block">Сумма ежемесячного пополнения</label>
+          <input type="number" id="monthValue" class="form-control form-input">
+        </div>
+        <div id="max-withdraw" class="leverage-result" style="display: none;">
+          <div>
+            <div class="result">Максимально допустимая сумма:</div>
+            <div class="digit" id="withdraw-amount"></div>
+          </div>
+        </div>
+        <div class="form-group" id="new-monthsCount">
+          <label for="monthsCount">Период </label>
+          ( <span id="period"><span id="month" class="period active">Месяцев</span> | <span id="years" class="period">Лет</span></span> )
+          <input type="number" id="monthsCount" class="form-control form-input" required min="1">
+        </div>
+        <button type="submit" class="btn btn-success" id="calculate">Рассчитать</button>
+
+        <div id="new-result" class="leverage-result" style="display: none;">
+          <div>
+            <div class="result">Активация счета:</div>
+            <div class="digit">-100 EUR</div>
+          </div>
+          <div>
+            <div class="result">Ажио:</div>
+            <div class="digit" id="ajio">100 EUR</div>
+          </div>
+          <div>
+            <div class="result">Доступно к снятию на конец срока:</div>
+            <div class="digit" id="amount"></div>
+          </div>
+          <div>
+            <div class="result">Вложено всего:</div>
+            <div class="digit" id="our"></div>
+          </div>
+          <div>
+            <div class="result">Ежемесячные дивиденды:</div>
+            <div class="digit" id="profit"></div>
+          </div>
+          <div>
+            <button id="details" type="button" class="btn btn-sm btn-info" style="margin-top: 10px">
+              Детализация рассчета
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <form id="leverage" style="margin: 15px">
+        <div class="form-group">
+          <label for="balance">Текущий баланс</label>
+          <input type="number" id="balance" class="form-control form-input" value="" required />
+        </div>
+        <div class="form-group">
+          <label for="loan">Текущий займ</label>
+          <input type="number" id="loan" class="form-control form-input" value="" required />
+        </div>
+        <div class="form-group">
+          <label for="contract">Текущий контракт</label>
+          <input type="number" id="contract" class="form-control form-input" value="" required />
+        </div>
+        <button type="submit" class="btn btn-success" id="leverage-calc">Рассчитать</button>
+
+        <div id="result" class="leverage-result" style="display: none;">
+          <div id="result_new">
+            <div class="result">Новый контракт: </div>
+            <div class="digit" id="result_new__value"></div>
+          </div>
+          <div id="result_balance">
+            <div class="result">Результирующий баланс: </div>
+            <div class="digit" id="result_balance__value"></div>
+          </div>
+          <div id="result_leverage">
+            <div class="result">Кредитное плечо: </div>
+            <div class="digit" id="result_leverage__value"></div>
+          </div>
+        </div>
+      </form>
+
+      <form id="convert-EUR" style="margin: 15px">
+        <div class="form-group">
+          <label for="convert-EUR_amount">Сумма для пополнения (EUR)</label>
+          <input type="number" id="convert-EUR_amount" class="form-control form-input" value="">
+          <span id="convert-EUR_cbRate">
+            <span>&times; </span><span id="convert-EUR_cbRate__value"></span>
+          </span>
+
+          <div id="convert-EUR_info">
+            <div>
+              <span>Сумма для пополнения (RUB): </span>
+              <span id="convert-EUR_info__value" class="digit-sm">0 RUB</span>
+              <span class="vista-tooltip">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle help-icon" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                  <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+                <span class="tooltiptext">Сумма в рублях по курсу ЦБ включая 2% за завод денег на счет Vista</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div>
+        <table id="detalization" style="display: none">
+          <thead>
+            <tr>
+              <td>Месяц</td>
+              <td>Внесено</td>
+              <td>Актив. счета</td>
+              <td>Контракт</td>
+              <td>Ажио</td>
+              <td>Своих</td>
+              <td>Займ</td>
+              <td>Баланс</td>
+              <td>Доходность</td>
+              <td>Начислено</td>
+              <td>Управл (-20%)</td>
+              <td>Обсл (-1/12%)</td>
+              <td>Займ (-7/12%)</td>
+              <td>Баланс</td>
+              <td>Своих</td>
+              <td>Прибыль</td>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+
+  <script src="index.js"></script>
+</html>
