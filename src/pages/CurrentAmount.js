@@ -189,21 +189,22 @@ export const CurrentAmount = () => {
                 return;
             }
 
+            const monthCount = activePeriod === Periods.YEAR ? period * 12 : +period;
             const _monthValue = withdraw === Withdraw.REMOVE ? -monthValue : +monthValue;
             const initValue = amount - loan;
 
             switch (leverage) {
                 case Leverage.ONCE:
-                    return setCalculationResult(onceLeverage(initValue, +period, _monthValue, +contract, false));
+                    return setCalculationResult(onceLeverage(initValue, monthCount, _monthValue, +contract, false));
                 case Leverage.LOAN:
-                    return setCalculationResult(withLoan(initValue, +period, _monthValue, +contract, false));
+                    return setCalculationResult(withLoan(initValue, monthCount, _monthValue, +contract, false));
                 case Leverage.LEVERAGE:
-                    return setCalculationResult(withLeverage(initValue, +period, _monthValue, +contract, false));
+                    return setCalculationResult(withLeverage(initValue, monthCount, _monthValue, +contract, false));
                 case Leverage.NONE:
-                    return setCalculationResult(withoutLoan(initValue, +period, _monthValue, +contract, false));
+                    return setCalculationResult(withoutLoan(initValue, monthCount, _monthValue, +contract, false));
             }
         },
-        [amount, contract, period, leverage, withdraw, monthValue, onValidate]
+        [amount, contract, period, leverage, withdraw, monthValue, onValidate, activePeriod]
     );
 
     return (
