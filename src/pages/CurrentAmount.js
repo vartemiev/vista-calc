@@ -80,7 +80,7 @@ export const CurrentAmount = () => {
                 setErrors({ ...errors, period: '' });
                 setPeriod(chosenPeriod === Periods.MONTH ?
                     (period * 12).toString() :
-                    Math.floor(period / 12).toString()
+                    Math.ceil(period / 12).toString()
                 );
             }}
         >
