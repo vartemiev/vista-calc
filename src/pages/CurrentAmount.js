@@ -78,7 +78,10 @@ export const CurrentAmount = () => {
             onClick={() => {
                 setActivePeriod(chosenPeriod);
                 setErrors({ ...errors, period: '' });
-                setPeriod('');
+                setPeriod(chosenPeriod === Periods.MONTH ?
+                    (period * 12).toString() :
+                    Math.floor(period / 12).toString()
+                );
             }}
         >
             {PeriodsTranslations[chosenPeriod]}
