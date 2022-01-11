@@ -39,12 +39,12 @@ function App() {
             <div className="App">
                 {EURRate && quotationsDate && (
                     <div className="cb-rate">
-                        <span className="cb-rate__grey">Курс ЦБ EUR / RUB:</span>
-                        <span>{EURRate}</span>
-                        <span className="cb-rate__grey">({formatDate(quotationsDate)})</span>
+                        <span className="cb-rate__grey"><b>Курс ЦБ EUR / RUB:</b></span>
+                        <span><b>{EURRate}</b></span>
+                        <span className="cb-rate__grey"><b>({formatDate(quotationsDate)})</b></span>
                     </div>
                 )}
-                <ul className="nav nav-tabs">
+                <ul className="nav nav-pills">
                     <li className="nav-item">
                         <a
                             className={classNames({'nav-link nav-link-sm': true, 'active': tab === Tabs.NEW})}
@@ -90,6 +90,8 @@ function App() {
                         </a>
                     </li>
                 </ul>
+
+                <hr style={{ borderTop: '2px solid rgba(0,0,0,.1)' }} />
 
                 {tab === Tabs.NEW && EURRate && quotationsDate && <NewAmount />}
 
