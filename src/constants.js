@@ -1,7 +1,9 @@
 export const Leverage = {
     LEVERAGE: 'LEVERAGE',
+    LEVERAGE_SIX: 'LEVERAGE_SIX',
     ONCE: 'ONCE',
     LOAN: 'LOAN',
+    LOAN_SIX: 'LOAN_SIX',
     NONE: 'NONE',
 };
 

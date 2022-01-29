@@ -1,10 +1,8 @@
 import { AJIO, MIN_CONTRACT, AVERAGE_RATE } from '../constants';
 import {
-    format,
     roundTwo,
     getMonthYear,
     generateRates,
-    detalizationResult,
     createDetailazationTable
 } from './helpers';
 
@@ -23,7 +21,7 @@ export const calculate = (
 ) => {
     let initialAjio = 0;
     let contract = actualContract;
-    let amount = enteredAmount;
+    let amount = enteredAmount + monthValue;
 
     if (isNew) {
         contract = enteredAmount - 100 > actualContract ? enteredAmount - 100 : actualContract;
@@ -56,7 +54,7 @@ export const calculate = (
             if (createRow) {
                 const tableRow = createRow({
                     month: getMonthYear(monthsCount - i),
-                    renewal: i === 0 ? enteredAmount : monthValue,
+                    renewal: (i === 0 && isNew) ? enteredAmount : monthValue,
                     ajio: (i === 0 && isNew) ? -(contract * AJIO) : -ajio,
                     activation: (i === 0 && isNew) ? -100 : 0,
                     contract,
@@ -77,17 +75,11 @@ export const calculate = (
     const averageProfit = getProfit(averageIncome, amount);
     const addedPerMonth = monthValue > 0 ? monthValue : 0;
 
-    detalizationTable.querySelector('tbody').innerHTML += detalizationResult(
-        Math.round(amount),
-        Math.round(addedPerMonth * monthsCount + enteredAmount),
-        Math.floor(averageProfit)
-    );
-
     return {
-        amount: format(amount),
-        initialAjio: format(initialAjio),
-        selfFunds: format(addedPerMonth * monthsCount + enteredAmount),
-        profit: format(Math.floor(averageProfit)),
+        amount: amount,
+        initialAjio: initialAjio,
+        selfFunds: addedPerMonth * monthsCount + enteredAmount,
+        profit: Math.floor(averageProfit),
         detalizationTable,
     };
 };

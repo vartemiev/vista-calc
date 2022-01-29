@@ -1,4 +1,5 @@
 import React from 'react';
+import { detalizationResult, format } from '../utils/helpers';
 
 const tableToExcel = (table, name, fileName) => {
     const uri = 'data:application/vnd.ms-excel;base64,';
@@ -26,41 +27,53 @@ const tableToExcel = (table, name, fileName) => {
     downloadURI(resUri, fileName);
 };
 
-export const CalculationResult = props => (
-    <div className="leverage-result">
-        {props.isNew && (
-            <div>
-                <div>Активация счета:</div>
-                <div className="digit">-100 EUR</div>
-            </div>
-        )}
+export const CalculationResult = props => {
+    const onDowloadDetailization = () => {
+        props.detalizationTable.querySelector('tbody').innerHTML += detalizationResult(
+            props.amount,
+            props.selfFunds,
+            props.profit
+        );
 
-        {props.initialAjio.trim() !== '0' && (
-            <div>
-                <div>Ажио:</div>
-                <div className="digit">-{props.initialAjio} EUR</div>
-            </div>
-        )}
+        tableToExcel(props.detalizationTable, 'Детализация', props.filename)
+    }
 
-        <div>
-            <div>Доступно к снятию на конец срока:</div>
-            <div className="digit">{props.amount} EUR</div>
+    return (
+        <div className="leverage-result">
+            {props.isNew && (
+                <div>
+                    <div>Активация счета:</div>
+                    <div className="digit">-100 EUR</div>
+                </div>
+            )}
+
+            {!!props.initialAjio && (
+                <div>
+                    <div>Ажио:</div>
+                    <div className="digit">-{format(props.initialAjio)} EUR</div>
+                </div>
+            )}
+
+            <div>
+                <div>Доступно к снятию на конец срока:</div>
+                <div className="digit">{format(props.amount)} EUR</div>
+            </div>
+            <div>
+                <div>Вложено всего:</div>
+                <div className="digit">{format(props.selfFunds)} EUR</div>
+            </div>
+            <div>
+                <div>Ежемесячные дивиденды:</div>
+                <div className="digit">{format(props.profit)} EUR</div>
+            </div>
+            <div>
+                <button
+                    className="btn btn-sm btn-info"
+                    onClick={onDowloadDetailization}
+                >
+                    Детализация рассчета
+                </button>
+            </div>
         </div>
-        <div>
-            <div>Вложено всего:</div>
-            <div className="digit">{props.selfFunds} EUR</div>
-        </div>
-        <div>
-            <div>Ежемесячные дивиденды:</div>
-            <div className="digit">{props.profit} EUR</div>
-        </div>
-        <div>
-            <button
-                className="btn btn-sm btn-info"
-                onClick={() => tableToExcel(props.detalizationTable, 'Детализация', props.filename)}
-            >
-                Детализация рассчета
-            </button>
-        </div>
-    </div>
-);
+    );
+}
