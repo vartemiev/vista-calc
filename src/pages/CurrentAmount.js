@@ -11,6 +11,9 @@ import { onceLeverage } from '../utils/onceLeverage';
 import { withoutLoan } from '../utils/withoutLoan';
 import { withLoan } from '../utils/withLoan';
 
+import { withSixMonthLeverage } from '../utils/sixMonth/withLeverage';
+import { withSixMonthLoan } from '../utils/sixMonth/withLoan';
+
 import { isValidNumber, getFileName } from '../utils/helpers';
 
 import { Leverage, Withdraw, Periods, PeriodsTranslations, MIN_CONTRACT } from '../constants';
@@ -56,7 +59,7 @@ export const CurrentAmount = () => {
     const [activePeriod, setActivePeriod] = useState(Periods.MONTH);
     const [period, setPeriod] = useState('');
 
-    const [leverage, setLeverage] = useState(Leverage.LEVERAGE);
+    const [leverage, setLeverage] = useState(Leverage.LEVERAGE_SIX);
     const [withdraw, setWithdraw] = useState(Withdraw.NONE);
 
     const [calculationResult, setCalculationResult] = useState(null);
@@ -78,10 +81,13 @@ export const CurrentAmount = () => {
             onClick={() => {
                 setActivePeriod(chosenPeriod);
                 setErrors({ ...errors, period: '' });
-                setPeriod(chosenPeriod === Periods.MONTH ?
-                    (period * 12).toString() :
-                    Math.ceil(period / 12).toString()
-                );
+
+                if (period !== '') {
+                    setPeriod(chosenPeriod === Periods.MONTH ?
+                        (period * 12).toString() :
+                        Math.ceil(period / 12).toString()
+                    );
+                }
             }}
         >
             {PeriodsTranslations[chosenPeriod]}
@@ -198,8 +204,12 @@ export const CurrentAmount = () => {
                     return setCalculationResult(onceLeverage(initValue, monthCount, _monthValue, +contract, false));
                 case Leverage.LOAN:
                     return setCalculationResult(withLoan(initValue, monthCount, _monthValue, +contract, false));
+                case Leverage.LOAN_SIX:
+                    return setCalculationResult(withSixMonthLoan(initValue, monthCount, _monthValue, +contract, false));
                 case Leverage.LEVERAGE:
                     return setCalculationResult(withLeverage(initValue, monthCount, _monthValue, +contract, false));
+                case Leverage.LEVERAGE_SIX:
+                    return setCalculationResult(withSixMonthLeverage(initValue, monthCount, _monthValue, +contract, false));
                 case Leverage.NONE:
                     return setCalculationResult(withoutLoan(initValue, monthCount, _monthValue, +contract, false));
             }

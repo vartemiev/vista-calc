@@ -3,12 +3,10 @@ import {
     roundTwo,
     serviceFee,
     workFee,
-    format,
     loanFee,
     leverage,
     generateRates,
     getMonthYear,
-    detalizationResult,
     createDetailazationTable,
 } from './helpers';
 
@@ -84,9 +82,9 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue, actualContr
 
         const tableRow = createRow({
             month: getMonthYear(monthsCount - i),
-            renewal: i === 0 ? enteredAmount : monthValue,
-            ajio: i === 0 ? -(contract * AJIO) : -ajio,
-            activation: i === 0 ? -100 : 0,
+            renewal: (i === 0 && isNew) ? enteredAmount : monthValue,
+            ajio: (i === 0 && isNew) ? -(contract * AJIO) : -ajio,
+            activation: (i === 0 && isNew) ? -100 : 0,
             amount: amount - _leverage,
             leverage: _leverage,
             contract,
@@ -104,17 +102,11 @@ export const onceLeverage = (enteredAmount, monthsCount, monthValue, actualContr
     const averageProfit = getProfit_WLoan(averageIncome, amount);
     const addedPerMonth = monthValue > 0 ? monthValue : 0;
 
-    detalizationTable.querySelector('tbody').innerHTML += detalizationResult(
-        Math.round(amount - _leverage),
-        Math.round(addedPerMonth * monthsCount + enteredAmount),
-        Math.floor(averageProfit)
-    );
-
     return {
-        amount: format(amount - _leverage),
-        initialAjio: format(initialAjio),
-        selfFunds: format(addedPerMonth * monthsCount + enteredAmount),
-        profit: format(Math.floor(averageProfit)),
+        amount: amount - _leverage,
+        initialAjio: initialAjio,
+        selfFunds: addedPerMonth * monthsCount + enteredAmount,
+        profit: Math.floor(averageProfit),
         detalizationTable,
     };
 }

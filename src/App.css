@@ -219,3 +219,11 @@ td {
   visibility: visible;
   opacity: 1;
 }
+
+.outdated {
+  color: #b3b3b3;
+}
+
+.radio-label {
+  text-align: start;
+}

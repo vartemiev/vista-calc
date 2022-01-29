@@ -12,15 +12,30 @@ export const RadioGroup = props => (
                 <input
                     type="radio"
                     className="custom-control-input"
-                    checked={props.leverage === Leverage.LEVERAGE}
+                    checked={props.leverage === Leverage.LEVERAGE_SIX}
 
                     onChange={noop}
                 />
                 <label
-                    className="custom-control-label"
-                    onClick={props.onChangeLeverage(Leverage.LEVERAGE)}
+                    className="custom-control-label radio-label"
+                    onClick={props.onChangeLeverage(Leverage.LEVERAGE_SIX)}
                 >
-                    С ежемесячной прокачкой
+                    Прокачка каждые 6 месяцев
+                </label>
+            </div>
+            <div className="custom-control custom-radio">
+                <input
+                    type="radio"
+                    className="custom-control-input"
+                    checked={props.leverage === Leverage.LOAN_SIX}
+
+                    onChange={noop}
+                />
+                <label
+                    className="custom-control-label radio-label"
+                    onClick={props.onChangeLeverage(Leverage.LOAN_SIX)}
+                >
+                    Займ 70% каждые 6 месяцев
                 </label>
             </div>
             <div className="custom-control custom-radio">
@@ -32,25 +47,10 @@ export const RadioGroup = props => (
                     onChange={noop}
                 />
                 <label
-                    className="custom-control-label"
+                    className="custom-control-label radio-label"
                     onClick={props.onChangeLeverage(Leverage.ONCE)}
                 >
                     Прокачать один раз
-                </label>
-            </div>
-            <div className="custom-control custom-radio">
-                <input
-                    type="radio"
-                    className="custom-control-input"
-                    checked={props.leverage === Leverage.LOAN}
-
-                    onChange={noop}
-                />
-                <label
-                    className="custom-control-label"
-                    onClick={props.onChangeLeverage(Leverage.LOAN)}
-                >
-                    С займом 70% каждый месяц
                 </label>
             </div>
             <div className="custom-control custom-radio">
@@ -62,10 +62,43 @@ export const RadioGroup = props => (
                     onChange={noop}
                 />
                 <label
-                    className="custom-control-label"
+                    className="custom-control-label radio-label"
                     onClick={props.onChangeLeverage(Leverage.NONE)}
                 >
                     Без займа
+                </label>
+            </div>
+
+            <div style={{ paddingTop: 10 }} />
+
+            <div className="custom-control custom-radio">
+                <input
+                    type="radio"
+                    className="custom-control-input"
+                    checked={props.leverage === Leverage.LEVERAGE}
+
+                    onChange={noop}
+                />
+                <label
+                    className="custom-control-label radio-label outdated"
+                    onClick={props.onChangeLeverage(Leverage.LEVERAGE)}
+                >
+                    С ежемесячной прокачкой
+                </label>
+            </div>
+            <div className="custom-control custom-radio">
+                <input
+                    type="radio"
+                    className="custom-control-input"
+                    checked={props.leverage === Leverage.LOAN}
+
+                    onChange={noop}
+                />
+                <label
+                    className="custom-control-label radio-label outdated"
+                    onClick={props.onChangeLeverage(Leverage.LOAN)}
+                >
+                    С займом 70% каждый месяц
                 </label>
             </div>
         </div>
@@ -80,7 +113,7 @@ export const RadioGroup = props => (
                     onChange={noop}
                 />
                 <label
-                    className="custom-control-label"
+                    className="custom-control-label radio-label"
                     onClick={props.onChangeWithdraw(Withdraw.NONE)}
                 >
                     Не снимать и не пополнять
@@ -95,7 +128,7 @@ export const RadioGroup = props => (
                     onChange={noop}
                 />
                 <label
-                    className="custom-control-label"
+                    className="custom-control-label radio-label"
                     onClick={props.onChangeWithdraw(Withdraw.ADD)}
                 >
                     Пополнять ежемесячно
@@ -110,7 +143,7 @@ export const RadioGroup = props => (
                     onChange={noop}
                 />
                 <label
-                    className="custom-control-label"
+                    className="custom-control-label radio-label"
                     onClick={props.onChangeWithdraw(Withdraw.REMOVE)}
                 >
                     Снимать ежемесячно
