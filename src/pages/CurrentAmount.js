@@ -214,7 +214,7 @@ export const CurrentAmount = () => {
                     return setCalculationResult(withoutLoan(initValue, monthCount, _monthValue, +contract, false));
             }
         },
-        [amount, contract, period, leverage, withdraw, monthValue, onValidate, activePeriod]
+        [amount, contract, period, leverage, loan, withdraw, monthValue, onValidate, activePeriod]
     );
 
     return (

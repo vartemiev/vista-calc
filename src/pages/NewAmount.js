@@ -129,7 +129,7 @@ export const NewAmount = () => {
 
             return MaxWithdraw[leverage](amount, contract);
         },
-        [leverage, initValue, activeCurrency]
+        [leverage, initValue, activeCurrency, EURRate]
     );
 
     const RUBInfo = useMemo(
@@ -212,7 +212,7 @@ export const NewAmount = () => {
 
             return true;
         },
-        [initValue, activeCurrency, EURRate, monthValue, maxWithdraw, period, activePeriod]
+        [initValue, activeCurrency, EURRate, monthValue, maxWithdraw, withdraw, period, activePeriod]
     );
 
     const onCalculateResult = useCallback(
@@ -243,7 +243,7 @@ export const NewAmount = () => {
                     return setCalculationResult(withoutLoan(amount, monthCount, _monthValue));
             }
         },
-        [initValue, period, leverage, withdraw, monthValue, onValidate, activeCurrency, activePeriod]
+        [initValue, period, leverage, withdraw, EURRate, monthValue, onValidate, activeCurrency, activePeriod]
     );
 
     return (
