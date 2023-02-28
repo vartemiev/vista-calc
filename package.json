@@ -18,7 +18,7 @@
     "start": "node_modules/.bin/react-scripts start",
     "build": "node_modules/.bin/react-scripts build",
     "test": "node_modules/.bin/react-scripts test",
-    "eject": "anode_modules/.bin/react-scripts eject",
+    "eject": "node_modules/.bin/react-scripts eject",
     "deploy": "./node_modules/.bin/gh-pages -d build"
   },
   "eslintConfig": {

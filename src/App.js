@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import './App.css';
 
+import { UTLCalculator } from './pages/UTL';
 import { NewAmount } from './pages/NewAmount';
 import { CurrentAmount } from './pages/CurrentAmount';
 import { Converter } from './pages/Converter';
@@ -12,6 +13,7 @@ import { formatDate } from './utils/helpers';
 export const EURContext = React.createContext(null);
 
 const Tabs = {
+    UTL: 'UTL',
     NEW: 'NEW',
     CURRENT: 'CURRENT',
     LEVERAGE: 'LEVERAGE',
@@ -19,7 +21,7 @@ const Tabs = {
 };
 
 function App() {
-    const [tab, setTab] = useState(Tabs.NEW);
+    const [tab, setTab] = useState(Tabs.UTL);
     const [EURRate, setEURRate] = useState({});
     const [quotationsDate, setQuotationsDate] = useState('');
 
@@ -45,6 +47,17 @@ function App() {
                     </div>
                 )}
                 <ul className="nav nav-pills">
+                    <li className="nav-item">
+                        <a
+                            className={classNames({'nav-link nav-link-sm': true, 'active': tab === Tabs.UTL})}
+                            id="utl"
+                            href="#"
+
+                            onClick={() => setTab(Tabs.UTL)}
+                        >
+                            BVSD/UTLTw
+                        </a>
+                    </li>
                     <li className="nav-item">
                         <a
                             className={classNames({'nav-link nav-link-sm': true, 'active': tab === Tabs.NEW})}
@@ -92,6 +105,8 @@ function App() {
                 </ul>
 
                 <hr style={{ borderTop: '2px solid rgba(0,0,0,.1)' }} />
+
+                {tab === Tabs.UTL && <UTLCalculator />}
 
                 {tab === Tabs.NEW && EURRate && quotationsDate && <NewAmount />}
 
